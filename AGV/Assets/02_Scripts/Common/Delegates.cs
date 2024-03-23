@@ -12,5 +12,4 @@ public class Delegates
 	public delegate void VoidBot(in Bot _bot);
 
 	public delegate void VoidBotCreater(in BotCreater _botCreater);
-
 }

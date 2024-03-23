@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class BotSpawnPosSetter : BotCreateSetter
 {
-	private Delegates.VoidPlag applyCallback = null;
+	private Delegates.VoidPlag applyDelegate = null;
 
 	[SerializeField] private Button m_BackButton = null;
 
@@ -42,7 +42,7 @@ public class BotSpawnPosSetter : BotCreateSetter
 	{
 		_onMouseEnterCallback?.Invoke(OnMouseEnterEvent);
 
-		applyCallback = _applyCallback;
+		applyDelegate = _applyCallback;
 	}
 
 	public override void Init()
@@ -60,7 +60,7 @@ public class BotSpawnPosSetter : BotCreateSetter
 	{
 		if (_plag.IsSpawnPlag) return;
 
-		applyCallback?.Invoke(_plag);
+		applyDelegate?.Invoke(_plag);
 		Init();
 	}
 

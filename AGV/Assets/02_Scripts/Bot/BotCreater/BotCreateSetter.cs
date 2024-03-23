@@ -5,7 +5,7 @@ using UnityEngine;
 
 public abstract class BotCreateSetter : MonoBehaviour
 {
-	protected Delegates.VoidAction_VoidPlag setModeCallback = null;
+	protected Delegates.VoidAction_VoidPlag setModeDelegate = null;
 	protected Delegates.VoidPlag setPlagsOnClickDelegate = null;
 
 	abstract public void Init();
@@ -18,7 +18,7 @@ public abstract class BotCreateSetter : MonoBehaviour
 	protected virtual void OnEnable()
 	{
 		Init();
-		setModeCallback?.Invoke(setPlagsOnClickEvent);
+		setModeDelegate?.Invoke(setPlagsOnClickEvent);
 	}
 
 	protected abstract void setPlagsOnClickEvent(in Plag _plag);
@@ -26,7 +26,7 @@ public abstract class BotCreateSetter : MonoBehaviour
 
 	public void SetModeCallback(Delegates.VoidAction_VoidPlag _setModeCallback)
 	{
-		setModeCallback = _setModeCallback;
+		setModeDelegate = _setModeCallback;
 	}
 
 	public void SetActive(bool _isActive)

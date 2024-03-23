@@ -63,8 +63,8 @@ public class LoadAndUnloadPlaceSetter : BotCreateSetter
 			applyCallback?.Invoke(m_LoadPlag, m_UnloadPlag);
 			Init();
 		});
-		m_SetLoadPlaceButton.onClick.AddListener(() => setModeCallback?.Invoke(setLoadPlace));
-		m_SetUnloadPlaceButton.onClick.AddListener(() => setModeCallback?.Invoke(setUnloadPlace));
+		m_SetLoadPlaceButton.onClick.AddListener(() => setModeDelegate?.Invoke(setLoadPlace));
+		m_SetUnloadPlaceButton.onClick.AddListener(() => setModeDelegate?.Invoke(setUnloadPlace));
 
 		//TODO
 		m_BackButton.onClick.AddListener(() => { });

@@ -7,8 +7,8 @@ using UnityEngine.UI;
 
 public class BotPrioritySetter : BotCreateSetter
 {
-	private Delegates.VoidInt applyCallback = null;
-	private Delegates.VoidInt cancelCallback = null;
+	private Delegates.VoidInt applyDelegate = null;
+	private Delegates.VoidInt cancelDelegate = null;
 
 	[SerializeField] private TMP_InputField m_PriorityInputField = null;
 	[SerializeField] private Button m_ApplyButton = null;
@@ -17,8 +17,8 @@ public class BotPrioritySetter : BotCreateSetter
 
 	public void SetCallback(Delegates.VoidInt _applyCallback, Delegates.VoidInt _cancelCallback)
 	{
-		applyCallback = _applyCallback;
-		cancelCallback = _cancelCallback;
+		applyDelegate = _applyCallback;
+		cancelDelegate = _cancelCallback;
 	}
 
 	public override void Init()
@@ -30,12 +30,12 @@ public class BotPrioritySetter : BotCreateSetter
 	{
 		m_ApplyButton.onClick.AddListener(() =>
 		{
-			applyCallback?.Invoke(Convert.ToInt32(m_PriorityInputField.text));
+			applyDelegate?.Invoke(Convert.ToInt32(m_PriorityInputField.text));
 		});
 
 		m_CancelButton.onClick.AddListener(() =>
 		{
-			cancelCallback?.Invoke(0);
+			cancelDelegate?.Invoke(0);
 		});
 
 		//TODO

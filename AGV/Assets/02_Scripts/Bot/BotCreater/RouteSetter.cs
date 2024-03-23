@@ -11,8 +11,7 @@ using UnityEngine.UI;
 
 public class RouteSetter : BotCreateSetter
 {
-	public delegate void VoidPlagListDelegate(in List<Plag> _plagList);
-	private VoidPlagListDelegate applyRouteCallback = null;
+	private Delegates.VoidPlagList applyRouteDelegate = null;
 
 	[SerializeField] private TMP_Text m_PathText = null;
 	[SerializeField] private Button m_BackspaceButton = null;
@@ -21,9 +20,9 @@ public class RouteSetter : BotCreateSetter
 
 	private readonly List<Plag> m_SelectedPlagList = new List<Plag>();
 
-	public void SetCallback(VoidPlagListDelegate _applyRouteCallback)
+	public void SetCallback(Delegates.VoidPlagList _applyRouteCallback)
 	{
-		applyRouteCallback = _applyRouteCallback;
+		applyRouteDelegate = _applyRouteCallback;
 	}
 
 	public override void Init()
@@ -56,7 +55,7 @@ public class RouteSetter : BotCreateSetter
 
 		m_ApplyButton.onClick.AddListener(() =>
 		{
-			applyRouteCallback?.Invoke(m_SelectedPlagList.ToList());
+			applyRouteDelegate?.Invoke(m_SelectedPlagList.ToList());
 			Init();
 		});
 	}
