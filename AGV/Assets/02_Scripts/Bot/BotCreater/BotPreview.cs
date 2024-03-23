@@ -14,7 +14,7 @@ public class BotPreview : MonoBehaviour
         m_Renderer = GetComponentInChildren<Renderer>();
 	}
 
-    public void OnPlagEnterEvent(Plag _plag)
+    public void OnPlagEnterEvent(in Plag _plag)
     {
         this.transform.position = _plag.Pos;
 
@@ -28,7 +28,7 @@ public class BotPreview : MonoBehaviour
         }
     }
 
-	public void SetActive(bool _isActive)
+	public void SetActive(in bool _isActive)
     {
         this.gameObject.SetActive(_isActive);
     }

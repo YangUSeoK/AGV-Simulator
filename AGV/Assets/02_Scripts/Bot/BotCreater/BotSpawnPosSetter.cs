@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class BotSpawnPosSetter : BotCreateSetter
 {
-	private Action<Plag> applyCallback = null;
+	private Delegates.VoidPlag applyCallback = null;
 
 	[SerializeField] private Button m_BackButton = null;
 
@@ -33,12 +33,12 @@ public class BotSpawnPosSetter : BotCreateSetter
 
 
 	// 플래그의 마우스Enter 이벤트에 프리뷰 함수 등록
-	private void OnMouseEnterEvent(Plag _plag)
+	private void OnMouseEnterEvent(in Plag _plag)
 	{
 		m_Preview?.OnPlagEnterEvent(_plag);
 	}
 
-	public void SetCallback(Action<Plag> _applyCallback, Action<Action<Plag>> _onMouseEnterCallback)
+	public void SetCallback(Delegates.VoidPlag _applyCallback, Delegates.VoidAction_VoidPlag _onMouseEnterCallback)
 	{
 		_onMouseEnterCallback?.Invoke(OnMouseEnterEvent);
 
@@ -50,13 +50,13 @@ public class BotSpawnPosSetter : BotCreateSetter
 		m_Preview?.SetActive(false);
 	}
 
-	protected override void SetButtonEvent()
+	protected override void setButtonEvent()
 	{
 		//TODO
 		m_BackButton.onClick.AddListener(() => { });
 	}
 
-	protected override void SetPlagsOnClickEvent(Plag _plag)
+	protected override void setPlagsOnClickEvent(in Plag _plag)
 	{
 		if (_plag.IsSpawnPlag) return;
 

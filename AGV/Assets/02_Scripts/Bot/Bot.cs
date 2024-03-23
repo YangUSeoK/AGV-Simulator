@@ -7,35 +7,46 @@ public class Bot : MonoBehaviour
 	private int m_Priority = 0;
 	public int Priority => m_Priority;
 
+	#region State
+	private BotStateMachine m_SM = null;
+
+	#endregion
+
+
+
+
+
+	private BotMovement m_Move = null;
 
 	private Plag m_SpawnPlag = null;
-	private List<Plag> m_RouteList = null;
+	private List<Plag> m_Path = null;
 	private Plag m_LoadPlag = null;
 	private Plag m_UnloadPlag = null;
 
-	public void SetMember(Plag _spawnPlag, Plag _loadPlag, Plag _unloadPlag, int _priority, List<Plag> _routeList)
+
+	private void Awake()
+	{
+		m_SM = GetComponentInChildren<BotStateMachine>();
+	}
+
+
+	public void StartSimulation()
+	{
+		m_Move.StartSimulation();
+	}
+
+
+
+
+	public void SetMember(in Plag _spawnPlag, in Plag _loadPlag, in Plag _unloadPlag, in int _priority, in List<Plag> _path)
 	{
 		m_SpawnPlag = _spawnPlag;
 		m_LoadPlag = _loadPlag;
 		m_UnloadPlag = _unloadPlag;
 		m_Priority = _priority;
-		m_RouteList = _routeList;
-	}
+		m_Path = _path;
 
-
-	[ContextMenu("Test")]
-	public void Test()
-	{
-		Debug.Log($"Spawn : {m_SpawnPlag}");
-		Debug.Log($"Load : {m_LoadPlag}");
-		Debug.Log($"Unload : {m_UnloadPlag}");
-		Debug.Log($"Priority : {m_Priority}");
-
-		Debug.Log(m_RouteList.Count);
-		foreach (var plag in m_RouteList)
-		{
-			Debug.Log($"plag : {plag.name}");
-		}
-
+		int startIdx = m_Path.IndexOf(m_SpawnPlag);
+		m_Move.SetMember(m_Path, startIdx);
 	}
 }

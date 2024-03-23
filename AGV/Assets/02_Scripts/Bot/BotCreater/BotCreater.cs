@@ -8,7 +8,8 @@ using UnityEngine.UI;
 
 public class BotCreater : MonoBehaviour
 {
-	private Action<Bot> createBotCallback = null;
+	private Delegates.VoidBot createBotDelegate = null;
+
 
 	[SerializeField] private GameObject m_BotPrefab = null;
 	
@@ -65,14 +66,14 @@ public class BotCreater : MonoBehaviour
 		}
 	}
 
-	private void ApplyRoute_Callback(List<Plag> _routePlagList)
+	private void applyRoute_Callback(in List<Plag> _routePlagList)
 	{
 		m_PathList = _routePlagList;
 		m_RouteSetter.SetActive(false);
 		m_LoadAndUnloadPlaceSetter.SetActive(true);
 	}
 
-	private void ApplyLoadAndUnloadPlace_Callback(Plag _loadPlag, Plag _unloadPlag)
+	private void applyLoadAndUnloadPlace_Callback(in Plag _loadPlag, in Plag _unloadPlag)
 	{
 		m_LoadPlag = _loadPlag;
 		m_UnloadPlag = _unloadPlag;
@@ -81,7 +82,7 @@ public class BotCreater : MonoBehaviour
 		m_SpawnPosSetter.SetActive(true);
 	}
 
-	private void ApplySpawnPlag_Callback(Plag _spawnPlag)
+	private void applySpawnPlag_Callback(in Plag _spawnPlag)
 	{
 		m_SpawnPlag = _spawnPlag;
 
@@ -89,28 +90,28 @@ public class BotCreater : MonoBehaviour
 		m_PrioritySetter.SetActive(true);
 	}
 
-	private void ApplyCreateBot_Callback(int _priority)
+	private void applyCreateBot_Callback(in int _priority)
 	{
 		m_Priority = _priority;
-		CreateBot();
+		createBot();
 	}
 
-	private void Cancel_Callback(int _num)
+	private void cancel_Callback(in int _num)
 	{
 		this.gameObject.SetActive(false);
 	}
 
-	private void CreateBot()
+	private void createBot()
 	{
 		Bot bot = Instantiate(m_BotPrefab, m_SpawnPlag.Pos, Quaternion.identity, m_Manager.transform).GetComponent<Bot>();
 
 		bot.SetMember(m_SpawnPlag, m_LoadPlag, m_UnloadPlag, m_Priority, m_PathList.ToList());
 
-		createBotCallback?.Invoke(bot);
+		createBotDelegate?.Invoke(bot);
 		Init();
 	}
 
-	private void SetPlagsOnClickEvent(Action<Plag> _event)
+	private void setPlagsOnClickEvent(Delegates.VoidPlag _event)
 	{
 		foreach (var plag in m_Plags)
 		{
@@ -118,7 +119,7 @@ public class BotCreater : MonoBehaviour
 		}
 	}
 
-	private void SetPlagsOnMouseEnterEvent(Action<Plag> _event)
+	private void setPlagsOnMouseEnterEvent(Delegates.VoidPlag _event)
 	{
 		foreach (var plag in m_Plags)
 		{
@@ -126,29 +127,29 @@ public class BotCreater : MonoBehaviour
 		}
 	}
 
-	public void SetActive(bool _isActive)
+	public void SetActive(in bool _isActive)
 	{
 		this.gameObject.SetActive(_isActive);
 	}
 
-	public void SetMember(BotManager _manager, Plag[] _plags)
+	public void SetMember(in BotManager _manager, in Plag[] _plags)
 	{
 		m_Manager = _manager;
 		m_Plags = _plags;
 	}
-	public void SetCallback(Action<Bot> _createBotCallback)
+	public void SetCallback(Delegates.VoidBot _createBotCallback)
 	{
-		createBotCallback = _createBotCallback;
+		createBotDelegate = _createBotCallback;
 
 		foreach (var setter in m_SetterList)
 		{
-			setter.SetModeCallback(SetPlagsOnClickEvent);
+			setter.SetModeCallback(setPlagsOnClickEvent);
 		}
 
-		m_RouteSetter.SetCallback(ApplyRoute_Callback);
-		m_LoadAndUnloadPlaceSetter.SetCallback(ApplyLoadAndUnloadPlace_Callback);
-		m_SpawnPosSetter.SetCallback(ApplySpawnPlag_Callback, SetPlagsOnMouseEnterEvent);
-		m_PrioritySetter.SetCallback(ApplyCreateBot_Callback,Cancel_Callback);
+		m_RouteSetter.SetCallback(applyRoute_Callback);
+		m_LoadAndUnloadPlaceSetter.SetCallback(applyLoadAndUnloadPlace_Callback);
+		m_SpawnPosSetter.SetCallback(applySpawnPlag_Callback, setPlagsOnMouseEnterEvent);
+		m_PrioritySetter.SetCallback(applyCreateBot_Callback,cancel_Callback);
 	}
 
 	public void Init()

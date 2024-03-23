@@ -5,25 +5,26 @@ using UnityEngine;
 
 public abstract class BotCreateSetter : MonoBehaviour
 {
-	protected Action<Action<Plag>> setModeCallback = null;
+	protected Delegates.VoidAction_VoidPlag setModeCallback = null;
+	protected Delegates.VoidPlag setPlagsOnClickDelegate = null;
 
-    abstract public void Init();
+	abstract public void Init();
 
 	protected virtual void Awake()
 	{
-		SetButtonEvent();
+		setButtonEvent();
 	}
 
 	protected virtual void OnEnable()
 	{
 		Init();
-		setModeCallback?.Invoke(SetPlagsOnClickEvent);
+		setModeCallback?.Invoke(setPlagsOnClickEvent);
 	}
 
-	protected abstract void SetPlagsOnClickEvent(Plag _plag);
-	protected abstract void SetButtonEvent();
+	protected abstract void setPlagsOnClickEvent(in Plag _plag);
+	protected abstract void setButtonEvent();
 
-	public void SetModeCallback(Action<Action<Plag>> _setModeCallback)
+	public void SetModeCallback(Delegates.VoidAction_VoidPlag _setModeCallback)
 	{
 		setModeCallback = _setModeCallback;
 	}

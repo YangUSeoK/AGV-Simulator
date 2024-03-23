@@ -3,8 +3,8 @@ using System;
 
 public class Plag : MonoBehaviour, IScaler
 {
-	private Action<Plag> onClickEvent = null;
-	private Action<Plag> onMouseOverEvent = null;
+	private Delegates.VoidPlag onClickEvent = null;
+	private Delegates.VoidPlag onMouseOverEvent = null;
 
 	[SerializeField] private Material m_SelectedMaterial = null;
 	[SerializeField] private Material m_OrigMaterial = null;
@@ -54,7 +54,7 @@ public class Plag : MonoBehaviour, IScaler
 		SetScale(m_OrigScale);
 	}
 
-	public void Selected(bool _isSelected)
+	public void Selected(in bool _isSelected)
 	{
 		if (_isSelected)
 		{
@@ -66,17 +66,17 @@ public class Plag : MonoBehaviour, IScaler
 		}
 	}
 
-	public void SetScale(Vector3 _scale)
+	public void SetScale(in Vector3 _scale)
 	{
 		this.transform.localScale = _scale;
 	}
 
-	public void SetOnClickEvent(Action<Plag> _onClickEvent)
+	public void SetOnClickEvent(Delegates.VoidPlag _onClickEvent)
 	{
 		onClickEvent = _onClickEvent;
 	}
 
-	public void SetOnMouseEnterEvent(Action<Plag> _onMouseEnterEvent)
+	public void SetOnMouseEnterEvent(Delegates.VoidPlag _onMouseEnterEvent)
 	{
 		onMouseOverEvent = _onMouseEnterEvent;
 	}

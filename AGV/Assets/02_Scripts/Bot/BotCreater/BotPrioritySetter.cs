@@ -7,15 +7,15 @@ using UnityEngine.UI;
 
 public class BotPrioritySetter : BotCreateSetter
 {
-	private Action<int> applyCallback = null;
-	private Action<int> cancelCallback = null;
+	private Delegates.VoidInt applyCallback = null;
+	private Delegates.VoidInt cancelCallback = null;
 
 	[SerializeField] private TMP_InputField m_PriorityInputField = null;
 	[SerializeField] private Button m_ApplyButton = null;
 	[SerializeField] private Button m_CancelButton = null;
 	[SerializeField] private Button m_BackButton = null;
 
-	public void SetCallback(Action<int> _applyCallback, Action<int> _cancelCallback)
+	public void SetCallback(Delegates.VoidInt _applyCallback, Delegates.VoidInt _cancelCallback)
 	{
 		applyCallback = _applyCallback;
 		cancelCallback = _cancelCallback;
@@ -26,7 +26,7 @@ public class BotPrioritySetter : BotCreateSetter
 		m_PriorityInputField.text = string.Empty;
 	}
 
-	protected override void SetButtonEvent()
+	protected override void setButtonEvent()
 	{
 		m_ApplyButton.onClick.AddListener(() =>
 		{
@@ -42,7 +42,7 @@ public class BotPrioritySetter : BotCreateSetter
 		m_BackButton.onClick.AddListener(() => { });
 	}
 
-	protected override void SetPlagsOnClickEvent(Plag _plag)
+	protected override void setPlagsOnClickEvent(in Plag _plag)
 	{
 
 	}

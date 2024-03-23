@@ -10,7 +10,8 @@ using UnityEngine.UI;
 
 public class LoadAndUnloadPlaceSetter : BotCreateSetter
 {
-	private Action<Plag, Plag> applyCallback = null;
+	public delegate void VoidPlagPlagDelegate(in Plag _loadPlag, in Plag _unloadPlag);
+	private VoidPlagPlagDelegate applyCallback = null;
 
 	[SerializeField] private TMP_Text m_LoadText = null;
 	[SerializeField] private TMP_Text m_UnloadText = null;
@@ -24,7 +25,7 @@ public class LoadAndUnloadPlaceSetter : BotCreateSetter
 
 
 	// 플래그를 클릭하면 실행될 함수
-	private void SetLoadPlace(Plag _loadPlag)
+	private void setLoadPlace(in Plag _loadPlag)
 	{
 		m_LoadPlag?.Selected(false);
 		m_LoadPlag = _loadPlag;
@@ -32,7 +33,7 @@ public class LoadAndUnloadPlaceSetter : BotCreateSetter
 		m_LoadText.text = $"Load : {_loadPlag.name}";
 	}
 
-	private void SetUnloadPlace(Plag _unloadPlag)
+	private void setUnloadPlace(in Plag _unloadPlag)
 	{
 		m_UnloadPlag?.Selected(false);
 		m_UnloadPlag = _unloadPlag;
@@ -41,7 +42,7 @@ public class LoadAndUnloadPlaceSetter : BotCreateSetter
 	}
 
 
-	public void SetCallback(Action<Plag, Plag> _applyLoadAndUnloadPlaceCallback)
+	public void SetCallback(VoidPlagPlagDelegate _applyLoadAndUnloadPlaceCallback)
 	{
 		applyCallback = _applyLoadAndUnloadPlaceCallback;
 	}
@@ -55,23 +56,23 @@ public class LoadAndUnloadPlaceSetter : BotCreateSetter
 		m_UnloadText.text = "Unload : ";
 	}
 
-	protected override void SetButtonEvent()
+	protected override void setButtonEvent()
 	{
 		m_ApplyButton.onClick.AddListener(() =>
 		{
 			applyCallback?.Invoke(m_LoadPlag, m_UnloadPlag);
 			Init();
 		});
-		m_SetLoadPlaceButton.onClick.AddListener(() => setModeCallback?.Invoke(SetLoadPlace));
-		m_SetUnloadPlaceButton.onClick.AddListener(() => setModeCallback?.Invoke(SetUnloadPlace));
+		m_SetLoadPlaceButton.onClick.AddListener(() => setModeCallback?.Invoke(setLoadPlace));
+		m_SetUnloadPlaceButton.onClick.AddListener(() => setModeCallback?.Invoke(setUnloadPlace));
 
 		//TODO
 		m_BackButton.onClick.AddListener(() => { });
 	}
 
 
-	protected override void SetPlagsOnClickEvent(Plag _plag)
+	protected override void setPlagsOnClickEvent(in Plag _plag)
 	{
-		SetLoadPlace(_plag);
+		setLoadPlace(_plag);
 	}
 }

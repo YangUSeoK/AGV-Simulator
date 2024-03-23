@@ -8,7 +8,8 @@ using System;
 public class BotManager : MonoBehaviour
 {
 	[SerializeField] private GameObject BotCreaterPrefab = null;
-	[SerializeField] private Canvas m_Canvas = null;
+
+	private Canvas m_Canvas = null;
 
 	private List<Bot> m_BotList = new List<Bot>();
 	private BotCreater m_BotCreater = null;
@@ -23,15 +24,29 @@ public class BotManager : MonoBehaviour
 	
 		m_BotCreater = go.GetComponent<BotCreater>();
 		m_BotCreater.SetMember(this, m_Plags);
-		m_BotCreater.SetCallback(AddNewBot);
+		m_BotCreater.SetCallback(addNewBot);
 
 		go.SetActive(true);
 
 		m_BotCreater.SetActive(false);
 	}
 
-	private void AddNewBot(Bot _newBot)
+	public void StartSimulation()
+	{ 
+		foreach(var bot in m_BotList)
+		{
+			bot.StartSimulation();
+		}
+	}
+
+	public void SetMember(in Canvas _canvas)
+	{
+		m_Canvas = _canvas;
+	}
+
+	private void addNewBot(in Bot _newBot)
 	{
 		m_BotList.Add(_newBot);
 	}
 }
+
