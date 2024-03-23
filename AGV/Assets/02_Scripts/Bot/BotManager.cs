@@ -7,6 +7,8 @@ using System;
 
 public class BotManager : MonoBehaviour
 {
+	private Delegates.VoidBotCreater instantiateBotCreaterDelegate = null;
+
 	[SerializeField] private GameObject BotCreaterPrefab = null;
 
 	private Canvas m_Canvas = null;
@@ -29,6 +31,8 @@ public class BotManager : MonoBehaviour
 		go.SetActive(true);
 
 		m_BotCreater.SetActive(false);
+
+		instantiateBotCreaterDelegate?.Invoke(m_BotCreater);
 	}
 
 	public void StartSimulation()
@@ -42,6 +46,10 @@ public class BotManager : MonoBehaviour
 	public void SetMember(in Canvas _canvas)
 	{
 		m_Canvas = _canvas;
+	}
+	public void SetDelegate(in Delegates.VoidBotCreater _instantiateBotCreaterCallback)
+	{
+		instantiateBotCreaterDelegate = _instantiateBotCreaterCallback;
 	}
 
 	private void addNewBot(in Bot _newBot)

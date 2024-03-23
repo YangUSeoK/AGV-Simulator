@@ -12,7 +12,7 @@ public class BotCreater : MonoBehaviour
 
 
 	[SerializeField] private GameObject m_BotPrefab = null;
-	
+
 	private BotCreateSetter[] m_SetterList = null;
 	private RouteSetter m_RouteSetter = null;
 	private LoadAndUnloadPlaceSetter m_LoadAndUnloadPlaceSetter = null;
@@ -21,7 +21,7 @@ public class BotCreater : MonoBehaviour
 
 	private BotManager m_Manager = null;
 	private Plag[] m_Plags = null;
-	
+
 	private List<Plag> m_PathList = new List<Plag>();
 	private Plag m_LoadPlag = null;
 	private Plag m_UnloadPlag = null;
@@ -32,23 +32,18 @@ public class BotCreater : MonoBehaviour
 	private void Awake()
 	{
 		m_SetterList = GetComponentsInChildren<BotCreateSetter>();
-		
+
 
 		m_RouteSetter = GetComponentInChildren<RouteSetter>();
 		m_LoadAndUnloadPlaceSetter = GetComponentInChildren<LoadAndUnloadPlaceSetter>();
 		m_SpawnPosSetter = GetComponentInChildren<BotSpawnPosSetter>();
 		m_PrioritySetter = GetComponentInChildren<BotPrioritySetter>();
 
-		foreach(var setter in m_SetterList)
-		{
-			setter.SetActive(false);
-		}
-		m_RouteSetter.SetActive(true);
+		Init();
 	}
 
 	private void OnEnable()
 	{
-		Init();
 		if (m_Plags == null) return;
 
 		foreach (var plag in m_Plags)
@@ -64,6 +59,7 @@ public class BotCreater : MonoBehaviour
 			plag.IsAddMode = false;
 			plag.SetOnClickEvent(null);
 		}
+		Init();
 	}
 
 	private void applyRoute_Callback(in List<Plag> _routePlagList)
@@ -105,10 +101,11 @@ public class BotCreater : MonoBehaviour
 	{
 		Bot bot = Instantiate(m_BotPrefab, m_SpawnPlag.Pos, Quaternion.identity, m_Manager.transform).GetComponent<Bot>();
 
-		bot.SetMember(m_SpawnPlag, m_LoadPlag, m_UnloadPlag, m_Priority, m_PathList.ToList());
+		bot.SetMember(m_PathList.ToList(), m_LoadPlag, m_UnloadPlag, m_SpawnPlag, m_Priority);
 
 		createBotDelegate?.Invoke(bot);
 		Init();
+		SetActive(false);
 	}
 
 	private void setPlagsOnClickEvent(Delegates.VoidPlag _event)
@@ -149,7 +146,7 @@ public class BotCreater : MonoBehaviour
 		m_RouteSetter.SetCallback(applyRoute_Callback);
 		m_LoadAndUnloadPlaceSetter.SetCallback(applyLoadAndUnloadPlace_Callback);
 		m_SpawnPosSetter.SetCallback(applySpawnPlag_Callback, setPlagsOnMouseEnterEvent);
-		m_PrioritySetter.SetCallback(applyCreateBot_Callback,cancel_Callback);
+		m_PrioritySetter.SetCallback(applyCreateBot_Callback, cancel_Callback);
 	}
 
 	public void Init()
@@ -158,5 +155,11 @@ public class BotCreater : MonoBehaviour
 		m_SpawnPlag = null;
 		m_LoadPlag = null;
 		m_UnloadPlag = null;
+
+		foreach (var setter in m_SetterList)
+		{
+			setter.SetActive(false);
+		}
+		m_RouteSetter.SetActive(true);
 	}
 }

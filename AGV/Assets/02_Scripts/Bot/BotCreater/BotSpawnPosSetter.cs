@@ -60,7 +60,6 @@ public class BotSpawnPosSetter : BotCreateSetter
 	{
 		if (_plag.IsSpawnPlag) return;
 
-		_plag.Selected(true);
 		applyCallback?.Invoke(_plag);
 		Init();
 	}
