@@ -2,13 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Delegates;
+using Unity.VisualScripting;
 
 public class UIManager : MonoBehaviour
 {
-	private Delegates.VoidVoid startSimulationDelegate = null;
+	private Delegate startSimulationDelegate = null;
+	private Delegate<BotCreater> instBotCreaterDelegate = null;
 
 	private static UIManager m_Instance;
 	public static UIManager Instance => m_Instance;
+
+	[SerializeField] private GameObject BotCreaterPrefab = null;
 
 	[SerializeField] private Button m_StartButton = null;
 	[SerializeField] private Button m_CreateBotButton = null;
@@ -28,7 +33,6 @@ public class UIManager : MonoBehaviour
 	private void Awake()
 	{
 		m_Instance = this;
-		SetEvent();
 	}
 
 	public void StartSimulation()
@@ -41,12 +45,23 @@ public class UIManager : MonoBehaviour
 		startSimulationDelegate?.Invoke();
 	}
 
-	public void SetDelegate(Delegates.VoidVoid _startSimulationCallback)
+	public void Init()
 	{
-		startSimulationDelegate = _startSimulationCallback;
+		m_BotCreater = Instantiate(BotCreaterPrefab, this.transform).GetComponent<BotCreater>();
+		instBotCreaterDelegate?.Invoke(m_BotCreater);
+
+		m_BotCreater.SetActive(false);
+
+		setEvent();
 	}
 
-	private void SetEvent()
+	public void SetDelegate(Delegate _startSimulationCallback, Delegate<BotCreater> _instBotCreaterCallback)
+	{
+		startSimulationDelegate = _startSimulationCallback;
+		instBotCreaterDelegate = _instBotCreaterCallback;
+	}
+
+	private void setEvent()
 	{
 		m_CreateBotButton.onClick.AddListener(() => m_BotCreater.SetActive(true));
 		m_StartButton.onClick.AddListener(() =>

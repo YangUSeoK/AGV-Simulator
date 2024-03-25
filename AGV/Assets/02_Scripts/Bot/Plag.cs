@@ -1,13 +1,20 @@
 using UnityEngine;
 using System;
+using Delegates;
 
 public class Plag : MonoBehaviour, IScaler
 {
-	private Delegates.VoidPlag onClickEvent = null;
-	private Delegates.VoidPlag onMouseOverEvent = null;
+	private Delegate<Plag> onClickEvent = null;
+	private Delegate<Plag> onMouseOverEvent = null;
 
 	[SerializeField] private Material m_SelectedMaterial = null;
 	[SerializeField] private Material m_OrigMaterial = null;
+
+
+	// 지금 현재 위치에 봇이 있는가?
+	// 현재 위치에서 봇이 있다가 사라졌는가?
+	// 나를 타겟으로 하고 있는 봇이 있는가?
+
 
 
 	public bool IsSpawnPlag { get; set; }
@@ -15,8 +22,17 @@ public class Plag : MonoBehaviour, IScaler
 
 	private Bot m_CurBot = null;
 	public Bot CurBot { set { m_CurBot = value; } }
-	public bool IsBotHere => (m_CurBot == null);
+	public bool IsBotHere => (m_CurBot != null) && Vector3.Distance(this.transform.position, m_CurBot.Pos) <= 1.5f;
 
+	// TODO Queue로 만드는거 생각해보기. 우선순위 큐 쓰면 될듯?
+	private Bot m_InComingBot = null;
+	public Bot InComingBot
+	{
+		get => m_InComingBot;
+		set { m_InComingBot = value; }
+	}
+
+	public bool IsNextBot => (m_InComingBot != null);
 
 
 	private bool m_IsAddMode = false;
@@ -48,10 +64,17 @@ public class Plag : MonoBehaviour, IScaler
 
 		SetScale(m_UpScale);
 	}
+
 	public void OnMouseExit()
 	{
 		if (!m_IsAddMode) return;
 		SetScale(m_OrigScale);
+	}
+
+	public void ArriveBot(Bot _bot)
+	{
+		m_CurBot = _bot;
+		m_InComingBot = null;
 	}
 
 	public void Selected(in bool _isSelected)
@@ -71,12 +94,12 @@ public class Plag : MonoBehaviour, IScaler
 		this.transform.localScale = _scale;
 	}
 
-	public void SetOnClickEvent(Delegates.VoidPlag _onClickEvent)
+	public void SetOnClickEvent(Delegate<Plag> _onClickEvent)
 	{
 		onClickEvent = _onClickEvent;
 	}
 
-	public void SetOnMouseEnterEvent(Delegates.VoidPlag _onMouseEnterEvent)
+	public void SetOnMouseEnterEvent(Delegate<Plag> _onMouseEnterEvent)
 	{
 		onMouseOverEvent = _onMouseEnterEvent;
 	}

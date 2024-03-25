@@ -27,7 +27,19 @@ public class Bot : MonoBehaviour
 	private int m_Priority = 0;
 	public int Priority => m_Priority;
 
+	public bool IsArrive => Vector3.Distance(Dest, Pos) <= CurSpeed * Time.deltaTime;
+
+	public bool CantGoNext => (m_Path[nextIdx].IsNextBot
+						   && m_Path[nextIdx].InComingBot != this)
+						   || m_Path[nextIdx].IsBotHere;
+
+	public bool CanGoNext => !CantGoNext;
+
 	private int m_StartIdx = 0;
+	private int m_CurIdx = 0;
+	public int CurIdx => m_CurIdx;
+	private int nextIdx => (m_CurIdx + 1) % m_Path.Count;
+
 
 
 	private void Awake()
@@ -42,20 +54,34 @@ public class Bot : MonoBehaviour
 
 	public void StartSimulation()
 	{
-		m_SM.StartSimulation(m_StartIdx);
+		m_CurIdx = m_Path.IndexOf(m_SpawnPlag);
+		m_Path[m_CurIdx].ArriveBot(this);
+
+		setDestination(m_StartIdx);
+		m_SM.StartSimulation();
 	}
 
-	// NavMesh Controll
-	public void SetDestination(in Vector3 _destVec)
+	public void ArriveAtDest()
 	{
-		m_Agent.SetDestination(_destVec);
+		m_Path[m_CurIdx].ArriveBot(this);
+
+		int prevIdx = m_CurIdx - 1;
+		if (prevIdx < 0)
+		{
+			prevIdx = m_Path.Count - 1;
+		}
+		m_Path[prevIdx].CurBot = null;
+
+		setDestination(nextIdx);
+		m_CurIdx = nextIdx;
 	}
+
 	public void SetNavMeshStop(bool _isStop)
 	{
 		m_Agent.isStopped = _isStop;
 	}
 
-	public void SetMember(in List<Plag> _path, in Plag _loadPlag, in Plag _unloadPlag, in Plag _spawnPlag, in int _priority)
+	public void Init(in List<Plag> _path, in Plag _loadPlag, in Plag _unloadPlag, in Plag _spawnPlag, in int _priority)
 	{
 		m_Path = _path;
 		m_LoadPlag = _loadPlag;
@@ -63,8 +89,16 @@ public class Bot : MonoBehaviour
 		m_SpawnPlag = _spawnPlag;
 		m_Priority = _priority;
 
-		m_StartIdx = m_Path.IndexOf(m_SpawnPlag);
+		m_StartIdx = (m_Path.IndexOf(m_SpawnPlag) + 1) % m_Path.Count;
+		Debug.Log($"{name}, {m_StartIdx}");
 
 		m_SM = new BotStateMachine(this);
+	}
+
+
+	private void setDestination(in int _nextIdx)
+	{
+		m_Path[_nextIdx].InComingBot = this;
+		m_Agent.SetDestination(m_Path[_nextIdx].Pos);
 	}
 }

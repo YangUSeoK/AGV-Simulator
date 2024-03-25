@@ -1,17 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.AI;
+using Delegates;
 
 public abstract class BotState
 {
-	public BotState(Bot _bot)
+	public BotState(in Bot _bot, in BotStateMachine _machine)
 	{
 		m_Bot = _bot;
+		m_Machine = _machine;
 	}
-	protected Bot m_Bot = null;
 
+	protected Bot m_Bot = null;
+	protected BotStateMachine m_Machine = null;
+	
 	public abstract void EnterState();
+	public abstract void CheckState();
 	public abstract void UpdateState();
 	public abstract void ExitState();
 }

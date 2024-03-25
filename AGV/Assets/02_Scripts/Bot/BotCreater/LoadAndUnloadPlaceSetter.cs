@@ -23,6 +23,39 @@ public class LoadAndUnloadPlaceSetter : BotCreateSetter
 	private Plag m_LoadPlag = null;
 	private Plag m_UnloadPlag = null;
 
+	public override void Init()
+	{
+		m_LoadPlag?.Selected(false);
+		m_UnloadPlag?.Selected(false);
+		m_LoadPlag = null;
+		m_UnloadPlag = null;
+		m_LoadText.text = "Load : ";
+		m_UnloadText.text = "Unload : ";
+	}
+
+	public void SetCallback(VoidPlagPlagDelegate _applyLoadAndUnloadPlaceCallback)
+	{
+		applyCallback = _applyLoadAndUnloadPlaceCallback;
+	}
+	
+	protected override void setButtonEvent()
+	{
+		m_ApplyButton.onClick.AddListener(() =>
+		{
+			applyCallback?.Invoke(m_LoadPlag, m_UnloadPlag);
+			Init();
+		});
+		m_SetLoadPlaceButton.onClick.AddListener(() => setModeDelegate?.Invoke(setLoadPlace));
+		m_SetUnloadPlaceButton.onClick.AddListener(() => setModeDelegate?.Invoke(setUnloadPlace));
+
+		//TODO
+		m_BackButton.onClick.AddListener(() => { });
+	}
+
+	protected override void setPlagsOnClickEvent(in Plag _plag)
+	{
+		setLoadPlace(_plag);
+	}
 
 	// 플래그를 클릭하면 실행될 함수
 	private void setLoadPlace(in Plag _loadPlag)
@@ -39,40 +72,5 @@ public class LoadAndUnloadPlaceSetter : BotCreateSetter
 		m_UnloadPlag = _unloadPlag;
 		_unloadPlag.Selected(true);
 		m_UnloadText.text = $"Unload : {_unloadPlag.name}";
-	}
-
-
-	public void SetCallback(VoidPlagPlagDelegate _applyLoadAndUnloadPlaceCallback)
-	{
-		applyCallback = _applyLoadAndUnloadPlaceCallback;
-	}
-	public override void Init()
-	{
-		m_LoadPlag?.Selected(false);
-		m_UnloadPlag?.Selected(false);
-		m_LoadPlag = null;
-		m_UnloadPlag = null;
-		m_LoadText.text = "Load : ";
-		m_UnloadText.text = "Unload : ";
-	}
-
-	protected override void setButtonEvent()
-	{
-		m_ApplyButton.onClick.AddListener(() =>
-		{
-			applyCallback?.Invoke(m_LoadPlag, m_UnloadPlag);
-			Init();
-		});
-		m_SetLoadPlaceButton.onClick.AddListener(() => setModeDelegate?.Invoke(setLoadPlace));
-		m_SetUnloadPlaceButton.onClick.AddListener(() => setModeDelegate?.Invoke(setUnloadPlace));
-
-		//TODO
-		m_BackButton.onClick.AddListener(() => { });
-	}
-
-
-	protected override void setPlagsOnClickEvent(in Plag _plag)
-	{
-		setLoadPlace(_plag);
 	}
 }

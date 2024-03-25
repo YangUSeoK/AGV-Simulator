@@ -4,18 +4,19 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Delegates;
 
 public class BotPrioritySetter : BotCreateSetter
 {
-	private Delegates.VoidInt applyDelegate = null;
-	private Delegates.VoidInt cancelDelegate = null;
+	private Delegate<int> applyDelegate = null;
+	private Delegate<int> cancelDelegate = null;
 
 	[SerializeField] private TMP_InputField m_PriorityInputField = null;
 	[SerializeField] private Button m_ApplyButton = null;
 	[SerializeField] private Button m_CancelButton = null;
 	[SerializeField] private Button m_BackButton = null;
 
-	public void SetCallback(Delegates.VoidInt _applyCallback, Delegates.VoidInt _cancelCallback)
+	public void SetCallback(Delegate<int> _applyCallback, Delegate<int> _cancelCallback)
 	{
 		applyDelegate = _applyCallback;
 		cancelDelegate = _cancelCallback;

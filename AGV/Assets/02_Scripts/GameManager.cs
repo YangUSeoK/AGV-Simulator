@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,12 +15,9 @@ public class GameManager : MonoBehaviour
 		m_BotManager = GetComponentInChildren<BotManager>();
 		m_UIManager = GetComponentInChildren<UIManager>();
 
-		m_BotManager.SetMember(m_Canvas);
-		m_BotManager.SetDelegate(instantiateBotCreaterCallback);
+		m_UIManager.SetDelegate(startSimulation, instBotCreaterCallback);
 
-
-
-		m_UIManager.SetDelegate(startSimulation);
+		m_UIManager.Init();
 	}
 
 	private void startSimulation()
@@ -28,8 +26,9 @@ public class GameManager : MonoBehaviour
 		m_UIManager.StartSimulation();
 	}
 
-	private void instantiateBotCreaterCallback(in BotCreater _botCreater)
+	private void instBotCreaterCallback(in BotCreater _botCreater)
 	{
-		m_UIManager.BotCreater = _botCreater;
+		m_BotManager.SetBotCreater(_botCreater);
 	}
+
 }

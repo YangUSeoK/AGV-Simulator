@@ -1794,6 +1794,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2912075629b1396458497a569cd35f37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BotCreaterPrefab: {fileID: 8841458344234061061, guid: ebed5decad0c6584498258ef12c95aaf, type: 3}
   m_StartButton: {fileID: 1693923882}
   m_CreateBotButton: {fileID: 905883559}
 --- !u!1 &1693923881
@@ -2071,7 +2072,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70979fb48a1dda041bd2897d853e633e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BotCreaterPrefab: {fileID: 8841458344234061061, guid: ebed5decad0c6584498258ef12c95aaf, type: 3}
 --- !u!4 &1924483044
 Transform:
   m_ObjectHideFlags: 0

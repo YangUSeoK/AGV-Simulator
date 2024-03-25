@@ -1,3 +1,4 @@
+using Delegates;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using UnityEngine.UI;
 
 public class BotSpawnPosSetter : BotCreateSetter
 {
-	private Delegates.VoidPlag applyDelegate = null;
+	private Delegate<Plag> applyDelegate = null;
 
 	[SerializeField] private Button m_BackButton = null;
 
@@ -38,7 +39,7 @@ public class BotSpawnPosSetter : BotCreateSetter
 		m_Preview?.OnPlagEnterEvent(_plag);
 	}
 
-	public void SetCallback(Delegates.VoidPlag _applyCallback, Delegates.VoidAction_VoidPlag _onMouseEnterCallback)
+	public void SetCallback(Delegate<Plag> _applyCallback, Delegate<Delegate<Plag>> _onMouseEnterCallback)
 	{
 		_onMouseEnterCallback?.Invoke(OnMouseEnterEvent);
 

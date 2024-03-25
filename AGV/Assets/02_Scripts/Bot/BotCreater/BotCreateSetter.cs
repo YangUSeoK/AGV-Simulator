@@ -1,3 +1,4 @@
+using Delegates;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,8 +6,8 @@ using UnityEngine;
 
 public abstract class BotCreateSetter : MonoBehaviour
 {
-	protected Delegates.VoidAction_VoidPlag setModeDelegate = null;
-	protected Delegates.VoidPlag setPlagsOnClickDelegate = null;
+	protected Delegate<Delegate<Plag>> setModeDelegate = null;
+	protected Delegate<Plag> setPlagsOnClickDelegate = null;
 
 	abstract public void Init();
 
@@ -24,7 +25,7 @@ public abstract class BotCreateSetter : MonoBehaviour
 	protected abstract void setPlagsOnClickEvent(in Plag _plag);
 	protected abstract void setButtonEvent();
 
-	public void SetModeCallback(Delegates.VoidAction_VoidPlag _setModeCallback)
+	public void SetModeCallback(Delegate<Delegate<Plag>> _setModeCallback)
 	{
 		setModeDelegate = _setModeCallback;
 	}

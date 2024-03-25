@@ -1,3 +1,4 @@
+using Delegates;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ using UnityEngine.UI;
 
 public class RouteSetter : BotCreateSetter
 {
-	private Delegates.VoidPlagList applyRouteDelegate = null;
+	private Delegate<List<Plag>> applyRouteDelegate = null;
 
 	[SerializeField] private TMP_Text m_PathText = null;
 	[SerializeField] private Button m_BackspaceButton = null;
@@ -20,19 +21,19 @@ public class RouteSetter : BotCreateSetter
 
 	private readonly List<Plag> m_SelectedPlagList = new List<Plag>();
 
-	public void SetCallback(Delegates.VoidPlagList _applyRouteCallback)
-	{
-		applyRouteDelegate = _applyRouteCallback;
-	}
-
 	public override void Init()
 	{
-		foreach(var plag in m_SelectedPlagList)
+		foreach (var plag in m_SelectedPlagList)
 		{
 			plag.Selected(false);
 		}
 		m_SelectedPlagList.Clear();
 		m_PathText.text = string.Empty;
+	}
+
+	public void SetCallback(Delegate<List<Plag>> _applyRouteCallback)
+	{
+		applyRouteDelegate = _applyRouteCallback;
 	}
 
 	protected override void setButtonEvent()

@@ -1,18 +1,15 @@
-using System.Collections.Generic;
-using UnityEngine.AI;
 using UnityEngine;
+using Delegates;
 
 public class BotState_Move : BotState
 {
-	public BotState_Move(Bot _bot) : base(_bot) { }
+	public BotState_Move(in Bot _bot, in BotStateMachine _matchine) : base(_bot, _matchine) { }
 
-	private int m_CurIdx = 0;
+	
+	private bool m_IsMoveWait = false;
 
-	private bool isArrive => Vector3.Distance(m_Bot.Dest, m_Bot.Pos) <= m_Bot.CurSpeed * Time.deltaTime;
-
-	public void StartSimulation(in int _startIdx)
+	public void StartSimulation()
 	{
-		m_Bot.SetDestination(m_Bot.Path[_startIdx].Pos);
 		m_Bot.SetNavMeshStop(false);
 	}
 
@@ -20,23 +17,41 @@ public class BotState_Move : BotState
 	{
 		m_Bot.SetNavMeshStop(true);
 	}
+	
 
 	public override void EnterState()
 	{
 		m_Bot.SetNavMeshStop(false);
 	}
 
-	public override void ExitState()
+	public override void CheckState()
 	{
-		m_Bot.SetNavMeshStop(true);
+		// 내가 갈 다음 노드를 목적지로 하고있는 로봇이 있다면, 그 로봇이 우선순위가 높다면 Wait
+		if (m_Bot.CantGoNext)
+		{
+			m_IsMoveWait = true;
+		}
+
+		// 도착한 노드가 Load 노드라면 Load
+		// 도착한 노드가 Unload 노드라면 Unload
 	}
 
 	public override void UpdateState()
 	{
-		if (isArrive)
+		if (m_Bot.IsArrive)
 		{
-			m_CurIdx = (++m_CurIdx) % m_Bot.Path.Count;
-			m_Bot.SetDestination(m_Bot.Path[m_CurIdx].Pos);
+			if (m_IsMoveWait)
+			{
+				m_Machine.SetState(m_Machine.MoveWaitState);
+				return;
+			}
+			m_Bot.ArriveAtDest();
 		}
+	}
+
+	public override void ExitState()
+	{
+		m_IsMoveWait = false;
+		m_Bot.SetNavMeshStop(true);
 	}
 }

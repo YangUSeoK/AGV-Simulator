@@ -1,22 +1,29 @@
+using Delegates;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class BotState_Wait : BotState
 {
-	public BotState_Wait(Bot _bot) : base(_bot) { }
+	public BotState_Wait(in Bot _bot, in BotStateMachine _matchine) : base(_bot, _matchine) { }
 
 	public override void EnterState()
 	{
+		
 		throw new System.NotImplementedException();
 	}
 
-	public override void ExitState()
+	public override void CheckState()
 	{
 		throw new System.NotImplementedException();
 	}
 
 	public override void UpdateState()
+	{
+		throw new System.NotImplementedException();
+	}
+
+	public override void ExitState()
 	{
 		throw new System.NotImplementedException();
 	}
