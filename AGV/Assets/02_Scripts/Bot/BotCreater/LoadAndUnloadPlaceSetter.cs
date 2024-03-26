@@ -10,7 +10,7 @@ using UnityEngine.UI;
 
 public class LoadAndUnloadPlaceSetter : BotCreateSetter
 {
-	public delegate void VoidPlagPlagDelegate(in Plag _loadPlag, in Plag _unloadPlag);
+	public delegate void VoidPlagPlagDelegate(in Flag _loadPlag, in Flag _unloadPlag);
 	private VoidPlagPlagDelegate applyCallback = null;
 
 	[SerializeField] private TMP_Text m_LoadText = null;
@@ -20,8 +20,8 @@ public class LoadAndUnloadPlaceSetter : BotCreateSetter
 	[SerializeField] private Button m_ApplyButton = null;
 	[SerializeField] private Button m_BackButton = null;
 
-	private Plag m_LoadPlag = null;
-	private Plag m_UnloadPlag = null;
+	private Flag m_LoadPlag = null;
+	private Flag m_UnloadPlag = null;
 
 	public override void Init()
 	{
@@ -52,13 +52,13 @@ public class LoadAndUnloadPlaceSetter : BotCreateSetter
 		m_BackButton.onClick.AddListener(() => { });
 	}
 
-	protected override void setPlagsOnClickEvent(in Plag _plag)
+	protected override void setPlagsOnClickEvent(in Flag _plag)
 	{
 		setLoadPlace(_plag);
 	}
 
 	// 플래그를 클릭하면 실행될 함수
-	private void setLoadPlace(in Plag _loadPlag)
+	private void setLoadPlace(in Flag _loadPlag)
 	{
 		m_LoadPlag?.Selected(false);
 		m_LoadPlag = _loadPlag;
@@ -66,7 +66,7 @@ public class LoadAndUnloadPlaceSetter : BotCreateSetter
 		m_LoadText.text = $"Load : {_loadPlag.name}";
 	}
 
-	private void setUnloadPlace(in Plag _unloadPlag)
+	private void setUnloadPlace(in Flag _unloadPlag)
 	{
 		m_UnloadPlag?.Selected(false);
 		m_UnloadPlag = _unloadPlag;

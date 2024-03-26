@@ -4,29 +4,29 @@ public class BotStateMachine
 	{
 		m_Bot = _bot;
 
-		m_MoveState = new BotState_Move(m_Bot, this);
-		m_MoveWaitState = new BotState_MoveWait(m_Bot, this);
-		m_LoadState = new BotState_Load(m_Bot, this);
-		m_UnloadState = new BotState_Unload(m_Bot, this);
-		m_WaitState = new BotState_Wait(m_Bot, this);
+		m_Move = new BotState_Move(m_Bot, this);
+		m_MoveWait = new BotState_MoveWait(m_Bot, this);
+		m_Load = new BotState_Load(m_Bot, this);
+		m_Unload = new BotState_Unload(m_Bot, this);
+		m_LoadWait = new BotState_LoadWait(m_Bot, this);
 	}
 
 	private readonly Bot m_Bot = null;
 
-	private readonly BotState_Move m_MoveState = null;
-	public BotState_Move MoveState => m_MoveState;
+	private readonly BotState_Move m_Move = null;
+	public BotState_Move Move => m_Move;
 
-	private readonly BotState_MoveWait m_MoveWaitState = null;
-	public BotState_MoveWait MoveWaitState => m_MoveWaitState;
+	private readonly BotState_MoveWait m_MoveWait = null;
+	public BotState_MoveWait MoveWait => m_MoveWait;
 
-	private readonly BotState_Load m_LoadState = null;
-	public BotState_Load LoadState => m_LoadState;
+	private readonly BotState_Load m_Load = null;
+	public BotState_Load Load => m_Load;
 
-	private readonly BotState_Unload m_UnloadState = null;
-	public BotState_Unload UnloadState => m_UnloadState;
+	private readonly BotState_Unload m_Unload = null;
+	public BotState_Unload Unload => m_Unload;
 
-	private readonly BotState_Wait m_WaitState = null;
-	public BotState_Wait WaitState => m_WaitState;
+	private readonly BotState_LoadWait m_LoadWait = null;
+	public BotState_LoadWait LoadWait => m_LoadWait;
 
 	private BotState m_CurState = null;
 
@@ -48,7 +48,7 @@ public class BotStateMachine
 
 	public void StartSimulation()
 	{
-		SetState(m_MoveState);
+		SetState(m_Move);
 		(m_CurState as BotState_Move).StartSimulation();
 	}
 

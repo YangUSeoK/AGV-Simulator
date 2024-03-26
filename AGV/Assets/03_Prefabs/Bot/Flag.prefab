@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8496978632372214021}
   - component: {fileID: 8496978632372214017}
   m_Layer: 0
-  m_Name: Plag
+  m_Name: Flag
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

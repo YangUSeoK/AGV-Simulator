@@ -130,6 +130,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e901c1c4fe7a5748bde7b5f23442beb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_StateMaterialList:
+  - {fileID: 2100000, guid: 6c5288b13a371bc47b585ee1fba55d3a, type: 2}
+  - {fileID: 2100000, guid: a67852c87012ac3499b15d9c1f98879e, type: 2}
+  - {fileID: 2100000, guid: db9da225222a33546858b60722c45336, type: 2}
+  - {fileID: 2100000, guid: 76f7447d6e844ef4283bc24d0d4c6676, type: 2}
+  - {fileID: 2100000, guid: a67852c87012ac3499b15d9c1f98879e, type: 2}
 --- !u!195 &2269739329063591967
 NavMeshAgent:
   m_ObjectHideFlags: 0

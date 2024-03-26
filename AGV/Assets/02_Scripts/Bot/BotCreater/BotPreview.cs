@@ -14,7 +14,7 @@ public class BotPreview : MonoBehaviour
         m_Renderer = GetComponentInChildren<Renderer>();
 	}
 
-    public void OnPlagEnterEvent(in Plag _plag)
+    public void OnPlagEnterEvent(in Flag _plag)
     {
         this.transform.position = _plag.Pos;
 

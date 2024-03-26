@@ -7,23 +7,31 @@ public class BotState_Load : BotState
 {
 	public BotState_Load(in Bot _bot, in BotStateMachine _matchine) : base(_bot, _matchine) { }
 
+	private readonly float loadTime = 5.0f;
+	private float m_Timer = 0;
+
 	public override void EnterState()
 	{
-		throw new System.NotImplementedException();
+		m_Timer = 0f;
+		m_Bot.SetMaterialByStateEnum(EBotState.Load);
 	}
 
 	public override void CheckState()
 	{
-		throw new System.NotImplementedException();
+		m_Timer += Time.deltaTime;
+		if(m_Timer >= loadTime)
+		{
+			m_Bot.FinishLoadUnload();
+		}
 	}
 
 	public override void UpdateState()
 	{
-		throw new System.NotImplementedException();
+		
 	}
 
 	public override void ExitState()
 	{
-		throw new System.NotImplementedException();
+		m_Timer = 0f;
 	}
 }

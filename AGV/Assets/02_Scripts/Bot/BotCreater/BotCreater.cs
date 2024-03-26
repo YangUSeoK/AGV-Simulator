@@ -21,14 +21,14 @@ public class BotCreater : MonoBehaviour
 	private BotPrioritySetter m_PrioritySetter = null;
 
 	private BotManager m_Manager = null;
-	private Plag[] m_Plags = null;
+	private Flag[] m_Plags = null;
 
-	private List<Plag> m_PathList = new List<Plag>();
-	private Plag m_LoadPlag = null;
-	private Plag m_UnloadPlag = null;
+	private List<Flag> m_PathList = new List<Flag>();
+	private Flag m_LoadPlag = null;
+	private Flag m_UnloadPlag = null;
 	private int m_Priority = 0;
 
-	private Plag m_SpawnPlag = null;
+	private Flag m_SpawnPlag = null;
 
 	private void Awake()
 	{
@@ -68,7 +68,7 @@ public class BotCreater : MonoBehaviour
 		this.gameObject.SetActive(_isActive);
 	}
 
-	public void Init(in BotManager _manager, in Plag[] _plags)
+	public void Init(in BotManager _manager, in Flag[] _plags)
 	{
 		m_Manager = _manager;
 		m_Plags = _plags;
@@ -89,14 +89,14 @@ public class BotCreater : MonoBehaviour
 		m_PrioritySetter.SetCallback(applyCreateBot_Callback, cancel_Callback);
 	}
 
-	private void applyRoute_Callback(in List<Plag> _routePlagList)
+	private void applyRoute_Callback(in List<Flag> _routePlagList)
 	{
 		m_PathList = _routePlagList;
 		m_RouteSetter.SetActive(false);
 		m_LoadAndUnloadPlaceSetter.SetActive(true);
 	}
 
-	private void applyLoadAndUnloadPlace_Callback(in Plag _loadPlag, in Plag _unloadPlag)
+	private void applyLoadAndUnloadPlace_Callback(in Flag _loadPlag, in Flag _unloadPlag)
 	{
 		m_LoadPlag = _loadPlag;
 		m_UnloadPlag = _unloadPlag;
@@ -105,7 +105,7 @@ public class BotCreater : MonoBehaviour
 		m_SpawnPosSetter.SetActive(true);
 	}
 
-	private void applySpawnPlag_Callback(in Plag _spawnPlag)
+	private void applySpawnPlag_Callback(in Flag _spawnPlag)
 	{
 		m_SpawnPlag = _spawnPlag;
 
@@ -135,7 +135,7 @@ public class BotCreater : MonoBehaviour
 		SetActive(false);
 	}
 
-	private void setPlagsOnClickEvent(in Delegate<Plag> _event)
+	private void setPlagsOnClickEvent(in Delegate<Flag> _event)
 	{
 		foreach (var plag in m_Plags)
 		{
@@ -143,7 +143,7 @@ public class BotCreater : MonoBehaviour
 		}
 	}
 
-	private void setPlagsOnMouseEnterEvent(in Delegate<Plag> _event)
+	private void setPlagsOnMouseEnterEvent(in Delegate<Flag> _event)
 	{
 		foreach (var plag in m_Plags)
 		{

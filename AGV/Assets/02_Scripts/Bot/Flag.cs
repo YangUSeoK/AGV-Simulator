@@ -1,11 +1,12 @@
 using UnityEngine;
 using System;
 using Delegates;
+using System.Collections.Generic;
 
-public class Plag : MonoBehaviour, IScaler
+public class Flag : MonoBehaviour, IScaler
 {
-	private Delegate<Plag> onClickEvent = null;
-	private Delegate<Plag> onMouseOverEvent = null;
+	private Delegate<Flag> onClickEvent = null;
+	private Delegate<Flag> onMouseOverEvent = null;
 
 	[SerializeField] private Material m_SelectedMaterial = null;
 	[SerializeField] private Material m_OrigMaterial = null;
@@ -15,25 +16,24 @@ public class Plag : MonoBehaviour, IScaler
 	// 현재 위치에서 봇이 있다가 사라졌는가?
 	// 나를 타겟으로 하고 있는 봇이 있는가?
 
-
-
 	public bool IsSpawnPlag { get; set; }
 	public Vector3 Pos => this.transform.position;
 
-	private Bot m_CurBot = null;
-	public Bot CurBot { set { m_CurBot = value; } }
-	public bool IsBotHere => (m_CurBot != null) && Vector3.Distance(this.transform.position, m_CurBot.Pos) <= 1.5f;
+	private readonly float m_LeaveDistance = 1.5f;
 
 	// TODO Queue로 만드는거 생각해보기. 우선순위 큐 쓰면 될듯?
-	private Bot m_InComingBot = null;
-	public Bot InComingBot
+	private Bot m_IncomingBot = null;
+	public Bot IncomingBot
 	{
-		get => m_InComingBot;
-		set { m_InComingBot = value; }
+		get => m_IncomingBot;
 	}
 
-	public bool IsNextBot => (m_InComingBot != null);
+	private readonly Queue<Bot> m_IncomingBotQueue = new Queue<Bot>();
+	
 
+	public bool IsIncomingtBot => (m_IncomingBot != null);
+
+	public int IncomingBotCnt;
 
 	private bool m_IsAddMode = false;
 	public bool IsAddMode { set { m_IsAddMode = value; } }
@@ -44,11 +44,44 @@ public class Plag : MonoBehaviour, IScaler
 
 	private Renderer m_Renderer = null;
 
+	private float m_IncomingBotPostDistance = Mathf.Infinity;
+
 
 	private void Awake()
 	{
 		m_OrigScale = this.transform.localScale;
 		m_Renderer = GetComponentInChildren<Renderer>();
+	}
+
+	private void Update()
+	{
+		IncomingBotCnt = m_IncomingBotQueue.Count;
+
+		if (m_IncomingBot == null)
+		{
+			if(m_IncomingBotQueue.Count > 0)
+			{
+				m_IncomingBot = m_IncomingBotQueue.Dequeue();
+				m_IncomingBot.GoNextFlag();
+			}
+		}
+		else
+		{
+			float distance = Vector3.Distance(m_IncomingBot.Pos, this.transform.position);
+
+			// 방금 전 프레임보다 지금이 더 멀다면 => 나가는 중
+			if(m_IncomingBotPostDistance <= distance)
+			{
+				if (m_LeaveDistance <= distance)
+				{
+					m_IncomingBot = null;
+					m_IncomingBotPostDistance = Mathf.Infinity;
+					return;
+				}
+			}
+
+			m_IncomingBotPostDistance = distance;
+		}
 	}
 
 	public void OnMouseUp()
@@ -71,11 +104,13 @@ public class Plag : MonoBehaviour, IScaler
 		SetScale(m_OrigScale);
 	}
 
-	public void ArriveBot(Bot _bot)
+	public void EnqueueIncomingBot(Bot _incomingBot)
 	{
-		m_CurBot = _bot;
-		m_InComingBot = null;
+		if (m_IncomingBotQueue.Contains(_incomingBot)) return;
+
+		m_IncomingBotQueue.Enqueue(_incomingBot);
 	}
+
 
 	public void Selected(in bool _isSelected)
 	{
@@ -94,12 +129,12 @@ public class Plag : MonoBehaviour, IScaler
 		this.transform.localScale = _scale;
 	}
 
-	public void SetOnClickEvent(Delegate<Plag> _onClickEvent)
+	public void SetOnClickEvent(Delegate<Flag> _onClickEvent)
 	{
 		onClickEvent = _onClickEvent;
 	}
 
-	public void SetOnMouseEnterEvent(Delegate<Plag> _onMouseEnterEvent)
+	public void SetOnMouseEnterEvent(Delegate<Flag> _onMouseEnterEvent)
 	{
 		onMouseOverEvent = _onMouseEnterEvent;
 	}

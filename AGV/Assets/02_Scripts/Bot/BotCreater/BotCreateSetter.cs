@@ -6,8 +6,8 @@ using UnityEngine;
 
 public abstract class BotCreateSetter : MonoBehaviour
 {
-	protected Delegate<Delegate<Plag>> setModeDelegate = null;
-	protected Delegate<Plag> setPlagsOnClickDelegate = null;
+	protected Delegate<Delegate<Flag>> setModeDelegate = null;
+	protected Delegate<Flag> setPlagsOnClickDelegate = null;
 
 	abstract public void Init();
 
@@ -22,10 +22,10 @@ public abstract class BotCreateSetter : MonoBehaviour
 		setModeDelegate?.Invoke(setPlagsOnClickEvent);
 	}
 
-	protected abstract void setPlagsOnClickEvent(in Plag _plag);
+	protected abstract void setPlagsOnClickEvent(in Flag _plag);
 	protected abstract void setButtonEvent();
 
-	public void SetModeCallback(Delegate<Delegate<Plag>> _setModeCallback)
+	public void SetModeCallback(Delegate<Delegate<Flag>> _setModeCallback)
 	{
 		setModeDelegate = _setModeCallback;
 	}

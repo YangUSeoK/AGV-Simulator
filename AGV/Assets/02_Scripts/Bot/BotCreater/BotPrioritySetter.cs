@@ -43,7 +43,7 @@ public class BotPrioritySetter : BotCreateSetter
 		m_BackButton.onClick.AddListener(() => { });
 	}
 
-	protected override void setPlagsOnClickEvent(in Plag _plag)
+	protected override void setPlagsOnClickEvent(in Flag _plag)
 	{
 
 	}

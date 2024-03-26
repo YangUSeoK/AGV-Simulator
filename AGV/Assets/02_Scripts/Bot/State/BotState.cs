@@ -5,11 +5,11 @@ public abstract class BotState
 	public BotState(in Bot _bot, in BotStateMachine _machine)
 	{
 		m_Bot = _bot;
-		m_Machine = _machine;
+		m_SM = _machine;
 	}
 
 	protected Bot m_Bot = null;
-	protected BotStateMachine m_Machine = null;
+	protected BotStateMachine m_SM = null;
 	
 	public abstract void EnterState();
 	public abstract void CheckState();

@@ -10,11 +10,11 @@ public class BotManager : MonoBehaviour
 {
 	private readonly List<Bot> m_BotList = new List<Bot>();
 
-	private Plag[] m_Plags = null;
+	private Flag[] m_Plags = null;
 
 	private void Awake()
 	{
-		m_Plags = GetComponentsInChildren<Plag>();
+		m_Plags = GetComponentsInChildren<Flag>();
 	}
 
 	public void StartSimulation()

@@ -12,14 +12,14 @@ using UnityEngine.UI;
 
 public class RouteSetter : BotCreateSetter
 {
-	private Delegate<List<Plag>> applyRouteDelegate = null;
+	private Delegate<List<Flag>> applyRouteDelegate = null;
 
 	[SerializeField] private TMP_Text m_PathText = null;
 	[SerializeField] private Button m_BackspaceButton = null;
 	[SerializeField] private Button m_ClearButton = null;
 	[SerializeField] private Button m_ApplyButton = null;
 
-	private readonly List<Plag> m_SelectedPlagList = new List<Plag>();
+	private readonly List<Flag> m_SelectedPlagList = new List<Flag>();
 
 	public override void Init()
 	{
@@ -31,7 +31,7 @@ public class RouteSetter : BotCreateSetter
 		m_PathText.text = string.Empty;
 	}
 
-	public void SetCallback(Delegate<List<Plag>> _applyRouteCallback)
+	public void SetCallback(Delegate<List<Flag>> _applyRouteCallback)
 	{
 		applyRouteDelegate = _applyRouteCallback;
 	}
@@ -42,7 +42,7 @@ public class RouteSetter : BotCreateSetter
 		{
 			if (m_SelectedPlagList.Count == 0) return;
 
-			Plag lastPlag = m_SelectedPlagList.Last();
+			Flag lastPlag = m_SelectedPlagList.Last();
 			lastPlag.Selected(false);
 			m_PathText.text = m_PathText.text[..(m_PathText.text.Length - 4 - lastPlag.name.Length)];
 			m_SelectedPlagList.Remove(lastPlag);
@@ -61,7 +61,7 @@ public class RouteSetter : BotCreateSetter
 		});
 	}
 
-	protected override void setPlagsOnClickEvent(in Plag _plag)
+	protected override void setPlagsOnClickEvent(in Flag _plag)
 	{
 		m_SelectedPlagList.Add(_plag);
 
