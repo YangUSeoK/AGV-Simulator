@@ -21,7 +21,7 @@ public class RouteSetter : BotCreateSetter
 
 	private readonly List<Flag> m_SelectedPlagList = new List<Flag>();
 
-	public override void Init()
+	public override void Clear()
 	{
 		foreach (var plag in m_SelectedPlagList)
 		{
@@ -51,13 +51,13 @@ public class RouteSetter : BotCreateSetter
 
 		m_ClearButton.onClick.AddListener(() =>
 		{
-			Init();
+			Clear();
 		});
 
 		m_ApplyButton.onClick.AddListener(() =>
 		{
 			applyRouteDelegate?.Invoke(m_SelectedPlagList.ToList());
-			Init();
+			Clear();
 		});
 	}
 

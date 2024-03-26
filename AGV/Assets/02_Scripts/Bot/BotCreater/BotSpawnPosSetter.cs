@@ -17,7 +17,7 @@ public class BotSpawnPosSetter : BotCreateSetter
 	private void Start()
 	{
 		m_Preview = Instantiate(m_BotPreviewPrefab).GetComponent<BotPreview>();
-		Init();
+		Clear();
 		m_Preview?.SetActive(true);
 	}
 
@@ -46,7 +46,7 @@ public class BotSpawnPosSetter : BotCreateSetter
 		applyDelegate = _applyCallback;
 	}
 
-	public override void Init()
+	public override void Clear()
 	{
 		m_Preview?.SetActive(false);
 	}
@@ -62,7 +62,7 @@ public class BotSpawnPosSetter : BotCreateSetter
 		if (_plag.IsSpawnPlag) return;
 
 		applyDelegate?.Invoke(_plag);
-		Init();
+		Clear();
 	}
 
 }

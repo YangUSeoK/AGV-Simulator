@@ -44,7 +44,7 @@ public class Bot : MonoBehaviour
 	public bool IsArrive => Vector3.Distance(Dest, Pos) <= CurSpeed * Time.deltaTime;
 
 	// inComingBot이 없거나, 자기 자신이면 갈 수 있음
-	public bool CanGoNext => !m_Path[nextIdx].IsIncomingtBot
+	public bool CanGoNext => !m_Path[nextIdx].IsExistIncomingtBot
 						   || m_Path[nextIdx].IncomingBot == this;
 
 	private int m_CurIdx = 0;

@@ -47,9 +47,10 @@ public class BotCreater : MonoBehaviour
 	{
 		if (m_Plags == null) return;
 
+		Debug.Log(m_Plags.Length);
 		foreach (var plag in m_Plags)
 		{
-			plag.IsAddMode = true;
+			plag.GameMode = EGameMode.AddBot;
 		}
 	}
 
@@ -57,7 +58,7 @@ public class BotCreater : MonoBehaviour
 	{
 		foreach (var plag in m_Plags)
 		{
-			plag.IsAddMode = false;
+			plag.GameMode = EGameMode.Edit;
 			plag.SetOnClickEvent(null);
 		}
 		clear();
@@ -84,7 +85,7 @@ public class BotCreater : MonoBehaviour
 		}
 
 		m_RouteSetter.SetCallback(applyRoute_Callback);
-		m_LoadAndUnloadPlaceSetter.SetCallback(applyLoadAndUnloadPlace_Callback);
+		m_LoadAndUnloadPlaceSetter.SetCallback(applyLoadAndUnloadPlace_Callback, checkFlagInPath);
 		m_SpawnPosSetter.SetCallback(applySpawnPlag_Callback, setPlagsOnMouseEnterEvent);
 		m_PrioritySetter.SetCallback(applyCreateBot_Callback, cancel_Callback);
 	}
@@ -103,6 +104,11 @@ public class BotCreater : MonoBehaviour
 
 		m_LoadAndUnloadPlaceSetter.SetActive(false);
 		m_SpawnPosSetter.SetActive(true);
+	}
+
+	private bool checkFlagInPath(in Flag _flag)
+	{
+		return m_PathList.Contains(_flag);
 	}
 
 	private void applySpawnPlag_Callback(in Flag _spawnPlag)

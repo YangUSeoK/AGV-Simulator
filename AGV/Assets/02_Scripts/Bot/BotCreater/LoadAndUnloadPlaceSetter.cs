@@ -4,14 +4,18 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Delegates;
+using static Unity.IO.LowLevel.Unsafe.AsyncReadManagerMetrics;
 
 
 // 경로 밖의 플래그를 선택하면 에러 띄우기
 
 public class LoadAndUnloadPlaceSetter : BotCreateSetter
 {
-	public delegate void VoidPlagPlagDelegate(in Flag _loadPlag, in Flag _unloadPlag);
-	private VoidPlagPlagDelegate applyCallback = null;
+	private Delegate<Flag,Flag> applyDelegate = null;
+	private Delegate<Flag> onClickDelegate = null;
+	private BoolDelegate<Flag> isFlagInPath = null;
+
 
 	[SerializeField] private TMP_Text m_LoadText = null;
 	[SerializeField] private TMP_Text m_UnloadText = null;
@@ -20,33 +24,31 @@ public class LoadAndUnloadPlaceSetter : BotCreateSetter
 	[SerializeField] private Button m_ApplyButton = null;
 	[SerializeField] private Button m_BackButton = null;
 
-	private Flag m_LoadPlag = null;
-	private Flag m_UnloadPlag = null;
+	private Flag m_LoadFlag = null;
+	private Flag m_UnloadFlag = null;
 
-	public override void Init()
+	public override void Clear()
 	{
-		m_LoadPlag?.Selected(false);
-		m_UnloadPlag?.Selected(false);
-		m_LoadPlag = null;
-		m_UnloadPlag = null;
-		m_LoadText.text = "Load : ";
-		m_UnloadText.text = "Unload : ";
+		clearLoadFlag();
+		clearUnloadFlag();
+		onClickDelegate = setLoadPlace;
 	}
 
-	public void SetCallback(VoidPlagPlagDelegate _applyLoadAndUnloadPlaceCallback)
+	public void SetCallback(Delegate<Flag, Flag> _applyLoadAndUnloadPlaceCallback, BoolDelegate<Flag> _checkFlagInPathFunc)
 	{
-		applyCallback = _applyLoadAndUnloadPlaceCallback;
+		applyDelegate = _applyLoadAndUnloadPlaceCallback;
+		isFlagInPath = _checkFlagInPathFunc;
 	}
 	
 	protected override void setButtonEvent()
 	{
 		m_ApplyButton.onClick.AddListener(() =>
 		{
-			applyCallback?.Invoke(m_LoadPlag, m_UnloadPlag);
-			Init();
+			applyDelegate?.Invoke(m_LoadFlag, m_UnloadFlag);
+			Clear();
 		});
-		m_SetLoadPlaceButton.onClick.AddListener(() => setModeDelegate?.Invoke(setLoadPlace));
-		m_SetUnloadPlaceButton.onClick.AddListener(() => setModeDelegate?.Invoke(setUnloadPlace));
+		m_SetLoadPlaceButton.onClick.AddListener(() => onClickDelegate = setLoadPlace);
+		m_SetUnloadPlaceButton.onClick.AddListener(() => onClickDelegate = setUnloadPlace);
 
 		//TODO
 		m_BackButton.onClick.AddListener(() => { });
@@ -54,23 +56,64 @@ public class LoadAndUnloadPlaceSetter : BotCreateSetter
 
 	protected override void setPlagsOnClickEvent(in Flag _plag)
 	{
-		setLoadPlace(_plag);
+		onClickDelegate?.Invoke(_plag);
 	}
 
 	// 플래그를 클릭하면 실행될 함수
-	private void setLoadPlace(in Flag _loadPlag)
+	private void setLoadPlace(in Flag _loadFlag)
 	{
-		m_LoadPlag?.Selected(false);
-		m_LoadPlag = _loadPlag;
-		_loadPlag.Selected(true);
-		m_LoadText.text = $"Load : {_loadPlag.name}";
+		clearLoadFlag();
+		if (!canSetFlag(_loadFlag)) return;
+
+		setLoadFlag(_loadFlag);
+		onClickDelegate = setUnloadPlace;
 	}
 
-	private void setUnloadPlace(in Flag _unloadPlag)
+	private void setUnloadPlace(in Flag _unloadFlag)
 	{
-		m_UnloadPlag?.Selected(false);
-		m_UnloadPlag = _unloadPlag;
-		_unloadPlag.Selected(true);
-		m_UnloadText.text = $"Unload : {_unloadPlag.name}";
+		clearUnloadFlag();
+		if (!canSetFlag(_unloadFlag)) return;
+
+		setUnloadFlag(_unloadFlag);
+		onClickDelegate = setLoadPlace;
+	}
+
+	/***************************************************************/
+
+	private bool canSetFlag(in Flag _flag)
+	{
+		return isFlagInPath(_flag) && (m_UnloadFlag != _flag);
+	}
+
+	private void clearLoadFlag()
+	{
+		clearFlag(ref m_LoadFlag);
+		m_LoadText.text = $"Load : ";
+	}
+
+	private void clearUnloadFlag()
+	{
+		clearFlag(ref m_UnloadFlag);
+		m_UnloadText.text = $"Unload : ";
+	}
+
+	private void clearFlag(ref Flag _flag)
+	{
+		_flag?.Selected(false);
+		_flag = null;
+	}
+
+	private void setLoadFlag(in Flag _flag)
+	{
+		m_LoadFlag = _flag;
+		_flag.Selected(true);
+		m_LoadText.text = $"Load : {_flag.name}";
+	}
+
+	private void setUnloadFlag(in Flag _flag)
+	{
+		m_UnloadFlag = _flag;
+		_flag.Selected(true);
+		m_UnloadText.text = $"Unload : {_flag.name}";
 	}
 }

@@ -22,7 +22,7 @@ public class BotPrioritySetter : BotCreateSetter
 		cancelDelegate = _cancelCallback;
 	}
 
-	public override void Init()
+	public override void Clear()
 	{
 		m_PriorityInputField.text = string.Empty;
 	}
@@ -31,7 +31,13 @@ public class BotPrioritySetter : BotCreateSetter
 	{
 		m_ApplyButton.onClick.AddListener(() =>
 		{
-			applyDelegate?.Invoke(Convert.ToInt32(m_PriorityInputField.text));
+			int priority = 0;
+			if(m_PriorityInputField.text != string.Empty)
+			{
+				priority = Convert.ToInt32(m_PriorityInputField.text);
+			}
+
+			applyDelegate?.Invoke(priority);
 		});
 
 		m_CancelButton.onClick.AddListener(() =>

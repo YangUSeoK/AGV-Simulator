@@ -3,6 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum EGameMode
+{
+	Edit = 0,
+	AddBot,
+	Play,
+
+	Length,
+}
+
 public class GameManager : MonoBehaviour
 {
 	[SerializeField] private Canvas m_Canvas = null;
