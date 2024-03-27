@@ -9,8 +9,6 @@ public abstract class BotCreateSetter : MonoBehaviour
 	protected Delegate<Delegate<Flag>> setModeDelegate = null;
 	protected Delegate<Flag> setPlagsOnClickDelegate = null;
 
-	abstract public void Clear();
-
 	protected virtual void Awake()
 	{
 		setButtonEvent();
@@ -18,12 +16,19 @@ public abstract class BotCreateSetter : MonoBehaviour
 
 	protected virtual void OnEnable()
 	{
-		Clear();
+		clear();
 		setModeDelegate?.Invoke(setPlagsOnClickEvent);
 	}
 
-	protected abstract void setPlagsOnClickEvent(in Flag _plag);
-	protected abstract void setButtonEvent();
+	protected virtual void OnDisable()
+	{
+		clear();
+	}
+
+	abstract public void Init();
+	abstract protected void clear();
+	abstract protected void setPlagsOnClickEvent(in Flag _plag);
+	abstract protected void setButtonEvent();
 
 	public void SetModeCallback(Delegate<Delegate<Flag>> _setModeCallback)
 	{

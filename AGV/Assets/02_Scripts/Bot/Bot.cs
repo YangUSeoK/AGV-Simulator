@@ -59,7 +59,10 @@ public class Bot : MonoBehaviour
 
 	private void Update()
 	{
-		m_SM.Update();
+		if (GameManager.GameMode == EGameMode.Play)
+		{
+			m_SM.Update();
+		}
 	}
 
 	public void StartSimulation()
@@ -68,6 +71,11 @@ public class Bot : MonoBehaviour
 		m_Path[nextIdx].EnqueueIncomingBot(this);
 
 		m_SM.StartSimulation();
+	}
+
+	public void FinishSimulation()
+	{
+		clear();
 	}
 
 	public void ArriveAtDestFlag()
@@ -126,5 +134,14 @@ public class Bot : MonoBehaviour
 		m_SM.SetState(m_SM.MoveWait);
 	}
 
-	
+	private void clear()
+	{
+		m_Agent.ResetPath();
+		SetNavMeshStop(true);
+		m_Agent.velocity = Vector3.zero;
+		SetMaterialByStateEnum(EBotState.Move);
+
+		this.transform.position = m_SpawnPlag.Pos;
+		this.transform.rotation = Quaternion.Euler(Vector3.zero);
+	}
 }

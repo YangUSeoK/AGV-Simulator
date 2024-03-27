@@ -2,19 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BotPreview : MonoBehaviour
+public class BotPreview : Preview
 {
-    [SerializeField] private Material m_CanMaterial = null;
-    [SerializeField] private Material m_CantMaterial = null;
-
-    private Renderer m_Renderer = null;
-
-	private void Awake()
-	{
-        m_Renderer = GetComponentInChildren<Renderer>();
-	}
-
-    public void OnPlagEnterEvent(in Flag _plag)
+    public void OnFlagEnterEvent(in Flag _plag)
     {
         this.transform.position = _plag.Pos;
 
@@ -26,10 +16,5 @@ public class BotPreview : MonoBehaviour
         {
             m_Renderer.material = m_CanMaterial;
         }
-    }
-
-	public void SetActive(in bool _isActive)
-    {
-        this.gameObject.SetActive(_isActive);
     }
 }

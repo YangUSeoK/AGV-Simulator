@@ -1,33 +1,32 @@
 using Delegates;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class BotSpawnPosSetter : BotCreateSetter
 {
 	private Delegate<Flag> applyDelegate = null;
+	private Delegate<Delegate<Flag>> setOnMouseEnterEventDelegate = null;
 
 	[SerializeField] private Button m_BackButton = null;
 
 	[SerializeField] private GameObject m_BotPreviewPrefab = null;
 	private BotPreview m_Preview = null;
 
-	private void Start()
-	{
-		m_Preview = Instantiate(m_BotPreviewPrefab).GetComponent<BotPreview>();
-		Clear();
-		m_Preview?.SetActive(true);
-	}
-
 	protected override void OnEnable()
 	{
 		base.OnEnable();
+
 		m_Preview?.SetActive(true);
+		setOnMouseEnterEventDelegate?.Invoke(OnMouseEnterEvent);
 	}
 
-	private void OnDisable()
+	protected override void OnDisable()
+	{
+		base.OnDisable();
+		setOnMouseEnterEventDelegate?.Invoke(null);
+	}
+
+	protected override void clear()
 	{
 		m_Preview?.SetActive(false);
 	}
@@ -36,19 +35,19 @@ public class BotSpawnPosSetter : BotCreateSetter
 	// 플래그의 마우스Enter 이벤트에 프리뷰 함수 등록
 	private void OnMouseEnterEvent(in Flag _plag)
 	{
-		m_Preview?.OnPlagEnterEvent(_plag);
+		m_Preview?.OnFlagEnterEvent(_plag);
 	}
 
-	public void SetCallback(Delegate<Flag> _applyCallback, Delegate<Delegate<Flag>> _onMouseEnterCallback)
+	public override void Init()
 	{
-		_onMouseEnterCallback?.Invoke(OnMouseEnterEvent);
+		m_Preview = Instantiate(m_BotPreviewPrefab, this.transform).GetComponent<BotPreview>();
+		clear();
+	}
 
+	public void SetCallback(Delegate<Flag> _applyCallback, Delegate<Delegate<Flag>> _setOnMouseEnterEventCallback)
+	{
+		setOnMouseEnterEventDelegate = _setOnMouseEnterEventCallback;
 		applyDelegate = _applyCallback;
-	}
-
-	public override void Clear()
-	{
-		m_Preview?.SetActive(false);
 	}
 
 	protected override void setButtonEvent()
@@ -62,7 +61,10 @@ public class BotSpawnPosSetter : BotCreateSetter
 		if (_plag.IsSpawnPlag) return;
 
 		applyDelegate?.Invoke(_plag);
-		Clear();
+		clear();
 	}
+
+	
+
 
 }

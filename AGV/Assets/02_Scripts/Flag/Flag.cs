@@ -11,10 +11,6 @@ public class Flag : MonoBehaviour, IScaler
 	[SerializeField] private Material m_SelectedMaterial = null;
 	[SerializeField] private Material m_OrigMaterial = null;
 
-	// 지금 현재 위치에 봇이 있는가?
-	// 현재 위치에서 봇이 있다가 사라졌는가?
-	// 나를 타겟으로 하고 있는 봇이 있는가?
-
 	public bool IsSpawnPlag { get; set; }
 	public Vector3 Pos => this.transform.position;
 
@@ -34,9 +30,6 @@ public class Flag : MonoBehaviour, IScaler
 
 	private float m_IncomingBotPostDistance = Mathf.Infinity;
 
-	// 현재 모드
-	private EGameMode m_GameMode = EGameMode.Edit;
-	public EGameMode GameMode { set { m_GameMode = value; } }
 
 	private void Awake()
 	{
@@ -75,8 +68,7 @@ public class Flag : MonoBehaviour, IScaler
 
 	public void OnMouseUp()
 	{
-		Debug.Log(m_GameMode);
-		if (m_GameMode == EGameMode.AddBot)
+		if (GameManager.GameMode == EGameMode.CreateBot)
 		{
 			onClickEvent?.Invoke(this);
 		}
@@ -84,7 +76,7 @@ public class Flag : MonoBehaviour, IScaler
 
 	public void OnMouseEnter()
 	{
-		if (m_GameMode == EGameMode.AddBot)
+		if (GameManager.GameMode == EGameMode.CreateBot)
 		{
 			onMouseOverEvent?.Invoke(this);
 			SetScale(m_UpScale);
@@ -93,13 +85,13 @@ public class Flag : MonoBehaviour, IScaler
 
 	public void OnMouseExit()
 	{
-		if (m_GameMode == EGameMode.AddBot)
+		if (GameManager.GameMode == EGameMode.CreateBot)
 		{
 			SetScale(m_OrigScale);
 		}
 	}
 
-	public void EnqueueIncomingBot(Bot _incomingBot)
+	public void EnqueueIncomingBot(in Bot _incomingBot)
 	{
 		if (m_IncomingBotQueue.Contains(_incomingBot)) return;
 
@@ -123,12 +115,12 @@ public class Flag : MonoBehaviour, IScaler
 		this.transform.localScale = _scale;
 	}
 
-	public void SetOnClickEvent(Delegate<Flag> _onClickEvent)
+	public void SetOnClickEvent(in Delegate<Flag> _onClickEvent)
 	{
 		onClickEvent = _onClickEvent;
 	}
 
-	public void SetOnMouseEnterEvent(Delegate<Flag> _onMouseEnterEvent)
+	public void SetOnMouseEnterEvent(in Delegate<Flag> _onMouseEnterEvent)
 	{
 		onMouseOverEvent = _onMouseEnterEvent;
 	}

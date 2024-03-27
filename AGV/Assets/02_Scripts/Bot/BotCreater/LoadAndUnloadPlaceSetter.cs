@@ -12,7 +12,7 @@ using static Unity.IO.LowLevel.Unsafe.AsyncReadManagerMetrics;
 
 public class LoadAndUnloadPlaceSetter : BotCreateSetter
 {
-	private Delegate<Flag,Flag> applyDelegate = null;
+	private Delegate<Flag, Flag> applyDelegate = null;
 	private Delegate<Flag> onClickDelegate = null;
 	private BoolDelegate<Flag> isFlagInPath = null;
 
@@ -27,25 +27,23 @@ public class LoadAndUnloadPlaceSetter : BotCreateSetter
 	private Flag m_LoadFlag = null;
 	private Flag m_UnloadFlag = null;
 
-	public override void Clear()
-	{
-		clearLoadFlag();
-		clearUnloadFlag();
-		onClickDelegate = setLoadPlace;
-	}
-
 	public void SetCallback(Delegate<Flag, Flag> _applyLoadAndUnloadPlaceCallback, BoolDelegate<Flag> _checkFlagInPathFunc)
 	{
 		applyDelegate = _applyLoadAndUnloadPlaceCallback;
 		isFlagInPath = _checkFlagInPathFunc;
 	}
-	
+
+	public override void Init()
+	{
+		clear();
+	}
+
 	protected override void setButtonEvent()
 	{
 		m_ApplyButton.onClick.AddListener(() =>
 		{
 			applyDelegate?.Invoke(m_LoadFlag, m_UnloadFlag);
-			Clear();
+			clear();
 		});
 		m_SetLoadPlaceButton.onClick.AddListener(() => onClickDelegate = setLoadPlace);
 		m_SetUnloadPlaceButton.onClick.AddListener(() => onClickDelegate = setUnloadPlace);
@@ -57,6 +55,13 @@ public class LoadAndUnloadPlaceSetter : BotCreateSetter
 	protected override void setPlagsOnClickEvent(in Flag _plag)
 	{
 		onClickDelegate?.Invoke(_plag);
+	}
+
+	protected override void clear()
+	{
+		clearLoadFlag();
+		clearUnloadFlag();
+		onClickDelegate = setLoadPlace;
 	}
 
 	// 플래그를 클릭하면 실행될 함수
@@ -116,4 +121,6 @@ public class LoadAndUnloadPlaceSetter : BotCreateSetter
 		_flag.Selected(true);
 		m_UnloadText.text = $"Unload : {_flag.name}";
 	}
+
+
 }

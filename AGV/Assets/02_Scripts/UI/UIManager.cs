@@ -1,22 +1,18 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Delegates;
-using Unity.VisualScripting;
 
 public class UIManager : MonoBehaviour
 {
 	private Delegate startSimulationDelegate = null;
+	private Delegate finishSimulationDelegate = null;
 	private Delegate<BotCreater> instBotCreaterDelegate = null;
-
-	private static UIManager m_Instance;
-	public static UIManager Instance => m_Instance;
 
 	[SerializeField] private GameObject BotCreaterPrefab = null;
 
-	[SerializeField] private Button m_StartButton = null;
-	[SerializeField] private Button m_CreateBotButton = null;
+	[SerializeField] private Toggle m_PlayToggle = null;
+	[SerializeField] private Toggle m_CreateBotModeToggle = null;
 
 	private readonly List<GameObject> m_UiList = new List<GameObject>();
 
@@ -30,19 +26,9 @@ public class UIManager : MonoBehaviour
 		}
 	}
 
-	private void Awake()
-	{
-		m_Instance = this;
-	}
-
 	public void StartSimulation()
 	{
 		offAllUI();
-	}
-
-	public void OnClick_StartSimulation()
-	{
-		startSimulationDelegate?.Invoke();
 	}
 
 	public void Init()
@@ -55,19 +41,47 @@ public class UIManager : MonoBehaviour
 		setEvent();
 	}
 
-	public void SetDelegate(Delegate _startSimulationCallback, Delegate<BotCreater> _instBotCreaterCallback)
+	public void SetDelegate(in Delegate _startSimulationCallback, in Delegate _finishSimulationCallback,
+							in Delegate<BotCreater> _instBotCreaterCallback)
 	{
 		startSimulationDelegate = _startSimulationCallback;
+		finishSimulationDelegate = _finishSimulationCallback;
 		instBotCreaterDelegate = _instBotCreaterCallback;
 	}
 
 	private void setEvent()
 	{
-		m_CreateBotButton.onClick.AddListener(() => m_BotCreater.SetActive(true));
-		m_StartButton.onClick.AddListener(() =>
+		m_CreateBotModeToggle.onValueChanged.AddListener((_isOn) =>
 		{
-			offAllUI();
-			startSimulationDelegate?.Invoke();
+			if (_isOn)
+			{
+				if (GameManager.GameMode != EGameMode.Edit)
+				{
+					m_CreateBotModeToggle.SetIsOnWithoutNotify(false);
+					return;
+				}
+			}
+
+			m_BotCreater.SetActive(_isOn);
+		});
+
+		m_PlayToggle.onValueChanged.AddListener((_isOn) =>
+		{
+			if(_isOn)
+			{
+				if(GameManager.GameMode != EGameMode.Edit)
+				{
+					m_PlayToggle.SetIsOnWithoutNotify(false);
+					return;
+				}
+
+				offAllUI();
+				startSimulationDelegate?.Invoke();
+			}
+			else
+			{
+				finishSimulationDelegate?.Invoke();
+			}
 		});
 	}
 

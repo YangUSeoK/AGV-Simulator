@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 public class BotStateMachine
 {
 	public BotStateMachine(in Bot _bot)
@@ -9,6 +11,9 @@ public class BotStateMachine
 		m_Load = new BotState_Load(m_Bot, this);
 		m_Unload = new BotState_Unload(m_Bot, this);
 		m_LoadWait = new BotState_LoadWait(m_Bot, this);
+		m_Idle = new BotState_Idle(m_Bot, this);
+
+		m_CurState = m_Idle;
 	}
 
 	private readonly Bot m_Bot = null;
@@ -28,12 +33,15 @@ public class BotStateMachine
 	private readonly BotState_LoadWait m_LoadWait = null;
 	public BotState_LoadWait LoadWait => m_LoadWait;
 
+	private readonly BotState_Idle m_Idle = null;
+	public BotState_Idle Finish => m_Idle;
+
 	private BotState m_CurState = null;
 
 
 	public void Update()
 	{
-		if (m_CurState is null) return;
+		Debug.Assert(m_CurState == null);
 
 		m_CurState.CheckState();
 		m_CurState.UpdateState();
@@ -41,9 +49,11 @@ public class BotStateMachine
 
 	public void SetState(in BotState _state)
 	{
-		m_CurState?.ExitState();
+		Debug.Assert(m_CurState == null);
+
+		m_CurState.ExitState();
 		m_CurState = _state;
-		m_CurState?.EnterState();
+		m_CurState.EnterState();
 	}
 
 	public void StartSimulation()
@@ -52,8 +62,8 @@ public class BotStateMachine
 		(m_CurState as BotState_Move).StartSimulation();
 	}
 
-	public void StopSimulation()
+	public void FinishSimulation()
 	{
-		SetState(null);
+		SetState(m_Idle);
 	}
 }
