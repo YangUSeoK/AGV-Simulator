@@ -1,30 +1,30 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Delegates;
 
-public class BotPrioritySetter : BotCreateSetter
+public class BotPrioritySetter : BotCreaterWindow
 {
 	private Delegate<int> applyDelegate = null;
-	private Delegate<int> cancelDelegate = null;
+	private Delegates.Delegate cancelDelegate = null;
 
 	[SerializeField] private TMP_InputField m_PriorityInputField = null;
 	[SerializeField] private Button m_ApplyButton = null;
 	[SerializeField] private Button m_CancelButton = null;
 	[SerializeField] private Button m_BackButton = null;
 
-	public void SetCallback(Delegate<int> _applyCallback, Delegate<int> _cancelCallback)
-	{
-		applyDelegate = _applyCallback;
-		cancelDelegate = _cancelCallback;
-	}
-
 	public override void Init()
 	{
 		clear();
+	}
+
+	protected override void setDelegate(in CreaterWindowDelegates<Bot> _delegates)
+	{
+		var delegates = _delegates as BotPrioritySetterDelegates;
+
+		applyDelegate = delegates.ApplyDelegate;
+		cancelDelegate = delegates.CancelDelegate;
 	}
 
 	protected override void setButtonEvent()
@@ -42,14 +42,14 @@ public class BotPrioritySetter : BotCreateSetter
 
 		m_CancelButton.onClick.AddListener(() =>
 		{
-			cancelDelegate?.Invoke(0);
+			cancelDelegate?.Invoke();
 		});
 
 		//TODO
 		m_BackButton.onClick.AddListener(() => { });
 	}
 
-	protected override void setPlagsOnClickEvent(in Flag _plag)
+	protected override void setFlagsOnClickEvent(in Flag _flag)
 	{
 
 	}
@@ -59,5 +59,19 @@ public class BotPrioritySetter : BotCreateSetter
 		m_PriorityInputField.text = string.Empty;
 	}
 
+}
 
+public class BotPrioritySetterDelegates : BotCreaterWindowDelegates
+{
+	public BotPrioritySetterDelegates(in Delegate<Delegate<Flag>> _setModeCallback, 
+									  in Delegate<int> _applyCallback,
+									  in Delegates.Delegate _cancelCallback) 
+									: base(_setModeCallback)
+	{
+		ApplyDelegate = _applyCallback;
+		CancelDelegate = _cancelCallback;
+	}
+
+	public Delegate<int> ApplyDelegate { get; }
+	public Delegates.Delegate CancelDelegate { get; }
 }

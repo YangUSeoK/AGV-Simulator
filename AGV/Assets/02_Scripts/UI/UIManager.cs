@@ -51,20 +51,6 @@ public class UIManager : MonoBehaviour
 
 	private void setEvent()
 	{
-		m_CreateBotModeToggle.onValueChanged.AddListener((_isOn) =>
-		{
-			if (_isOn)
-			{
-				if (GameManager.GameMode != EGameMode.Edit)
-				{
-					m_CreateBotModeToggle.SetIsOnWithoutNotify(false);
-					return;
-				}
-			}
-
-			m_BotCreater.SetActive(_isOn);
-		});
-
 		m_PlayToggle.onValueChanged.AddListener((_isOn) =>
 		{
 			if(_isOn)

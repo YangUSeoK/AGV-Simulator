@@ -1,21 +1,16 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Delegates;
-using static Unity.IO.LowLevel.Unsafe.AsyncReadManagerMetrics;
 
 
 // 경로 밖의 플래그를 선택하면 에러 띄우기
 
-public class LoadAndUnloadPlaceSetter : BotCreateSetter
+public class BotLocationSetter : BotCreaterWindow
 {
 	private Delegate<Flag, Flag> applyDelegate = null;
 	private Delegate<Flag> onClickDelegate = null;
 	private BoolDelegate<Flag> isFlagInPath = null;
-
 
 	[SerializeField] private TMP_Text m_LoadText = null;
 	[SerializeField] private TMP_Text m_UnloadText = null;
@@ -27,15 +22,16 @@ public class LoadAndUnloadPlaceSetter : BotCreateSetter
 	private Flag m_LoadFlag = null;
 	private Flag m_UnloadFlag = null;
 
-	public void SetCallback(Delegate<Flag, Flag> _applyLoadAndUnloadPlaceCallback, BoolDelegate<Flag> _checkFlagInPathFunc)
-	{
-		applyDelegate = _applyLoadAndUnloadPlaceCallback;
-		isFlagInPath = _checkFlagInPathFunc;
-	}
-
 	public override void Init()
 	{
 		clear();
+	}
+
+	protected override void setDelegate(in CreaterWindowDelegates<Bot> _delegates)
+	{
+		var delegates = _delegates as BotLocationSetterDelegates;
+		applyDelegate = delegates.ApplyDelegate;
+		isFlagInPath = delegates.IsFlagInPath;
 	}
 
 	protected override void setButtonEvent()
@@ -52,7 +48,7 @@ public class LoadAndUnloadPlaceSetter : BotCreateSetter
 		m_BackButton.onClick.AddListener(() => { });
 	}
 
-	protected override void setPlagsOnClickEvent(in Flag _plag)
+	protected override void setFlagsOnClickEvent(in Flag _plag)
 	{
 		onClickDelegate?.Invoke(_plag);
 	}
@@ -82,8 +78,6 @@ public class LoadAndUnloadPlaceSetter : BotCreateSetter
 		setUnloadFlag(_unloadFlag);
 		onClickDelegate = setLoadPlace;
 	}
-
-	/***************************************************************/
 
 	private bool canSetFlag(in Flag _flag)
 	{
@@ -121,6 +115,19 @@ public class LoadAndUnloadPlaceSetter : BotCreateSetter
 		_flag.Selected(true);
 		m_UnloadText.text = $"Unload : {_flag.name}";
 	}
+}
 
+public class BotLocationSetterDelegates : BotCreaterWindowDelegates
+{
+	public BotLocationSetterDelegates(in Delegate<Delegate<Flag>> _setModeCallback, 
+									  in Delegate<Flag, Flag> _applyLoadAndUnloadPlaceCallback,
+									  in BoolDelegate<Flag> _checkFlagInPathFunc) 
+									: base(_setModeCallback)
+	{
+		ApplyDelegate = _applyLoadAndUnloadPlaceCallback;
+		IsFlagInPath = _checkFlagInPathFunc;
+	}
 
+	public Delegate<Flag, Flag> ApplyDelegate { get; }
+	public BoolDelegate<Flag> IsFlagInPath { get; }
 }

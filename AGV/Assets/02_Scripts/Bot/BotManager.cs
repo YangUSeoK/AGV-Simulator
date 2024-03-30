@@ -2,51 +2,53 @@ using System.Collections.Generic;
 using UnityEngine;
 using Delegates;
 
-public class BotManager : MonoBehaviour
+public class BotManager : Manager<Bot>
 {
-	private Delegate createBotDelegate = null;
+	private Delegate<Bot> createBotDelegate = null;
 
-	private readonly List<Bot> m_BotList = new List<Bot>();
+	private BotCreater m_Creater = null;
 
-	public void StartSimulation()
-	{ 
-		foreach(var bot in m_BotList)
-		{
-			bot.StartSimulation();
-		}
+	
+	public override void SetDelegate(in DelegatesInfo<Bot> _delegates)
+	{
+		var delegates = _delegates as BotManagerDelegates;
+
+		createBotDelegate = delegates.CreateBotDelegate;
 	}
 
-	public void FinishSimulation()
+	public void SetBotCreater(in BotCreater _creater, in BotCreaterDelegates _botCreaterDelegates)
 	{
-		foreach(var bot in m_BotList)
-		{
-			bot.FinishSimulation();
-		}
+		m_Creater = _creater;
+		_creater.Init(this, m_Prefab);
+
+		_botCreaterDelegates.CreatedDelegate = addNewBot;
+		_creater.SetDelegate(_botCreaterDelegates);
 	}
 
-	public void Init()
+	protected override void startCreateMode()
 	{
-		
+		GameManager.GameMode = CreateMode;
+		m_Creater.SetActive(true);
 	}
 
-	public void SetDelegate(in Delegate _createBotCallback)
+	protected override void finishCreateMode()
 	{
-		createBotDelegate = _createBotCallback;
-	}
-
-	public void SetBotCreater(in BotCreater _botCreater, in Delegate _createBotCallback,
-							  in Delegate _startCreateBotModeCallback, in Delegate _finishCreateBotModeCallback,
-							  in Delegate<Delegate<Flag>> _setFlagsOnClickEventCallback, in Delegate<Delegate<Flag>> _setFlagsOnMouseEnterEventDelegate)
-	{
-		_botCreater.Init(this);
-		_botCreater.SetCallback(addNewBot, _startCreateBotModeCallback, _finishCreateBotModeCallback,
-								_setFlagsOnClickEventCallback, _setFlagsOnMouseEnterEventDelegate);
+		GameManager.GameMode = EGameMode.Edit;
+		m_Creater.SetActive(false);
 	}
 
 	private void addNewBot(in Bot _newBot)
 	{
-		m_BotList.Add(_newBot);
-		createBotDelegate?.Invoke();
+		m_List.Add(_newBot);
+		createBotDelegate?.Invoke(_newBot);
 	}
 }
 
+public class BotManagerDelegates : DelegatesInfo<Bot>
+{
+	public BotManagerDelegates(in Delegate<Bot> _createBotCallback)
+	{
+		CreateBotDelegate = _createBotCallback;
+	}
+	public Delegate<Bot> CreateBotDelegate { get; }
+}

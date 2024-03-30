@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FlagPreview : Preview<Flag>
+public class LocationPreview : Preview<Location>
 {
 	public override bool CanMake()
 	{

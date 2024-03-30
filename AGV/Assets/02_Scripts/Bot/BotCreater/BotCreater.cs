@@ -1,119 +1,89 @@
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using Delegates;
 
-public class BotCreater : MonoBehaviour
+public class BotCreater : Creater<Bot>
 {
-	private Delegate<Bot> createBotDelegate = null;
-	private Delegate onCreateModeDelegate = null;
-	private Delegate offCreateModeDelegate = null;
-	private Delegate<Delegate<Flag>> setFlagsOnClickEventDelegate = null;
-	private Delegate<Delegate<Flag>> setFlagsOnMouseEnterEventDelegate = null;
-
-
-	[SerializeField] private GameObject m_BotPrefab = null;
-
-	private BotCreateSetter[] m_SetterList = null;
-	private RouteSetter m_RouteSetter = null;
-	private LoadAndUnloadPlaceSetter m_LoadAndUnloadPlaceSetter = null;
+	private readonly List<BotCreaterWindow> m_WindowList = new List<BotCreaterWindow>();
+	private BotRouteSetter m_RouteSetter = null;
+	private BotLocationSetter m_LocationSetter = null;
 	private BotSpawnPosSetter m_SpawnPosSetter = null;
 	private BotPrioritySetter m_PrioritySetter = null;
 
-	private BotManager m_Manager = null;
-
 	private List<Flag> m_PathList = new List<Flag>();
-	private Flag m_LoadPlag = null;
-	private Flag m_UnloadPlag = null;
-	private int m_Priority = 0;
-
+	private Flag m_LoadFlag = null;
+	private Flag m_UnloadFlag = null;
 	private Flag m_SpawnFlag = null;
+
+	private int m_Priority = 0;
 
 	private void Awake()
 	{
-		m_SetterList = GetComponentsInChildren<BotCreateSetter>();
-
-
-		m_RouteSetter = GetComponentInChildren<RouteSetter>();
-		m_LoadAndUnloadPlaceSetter = GetComponentInChildren<LoadAndUnloadPlaceSetter>();
+		m_RouteSetter = GetComponentInChildren<BotRouteSetter>();
+		m_LocationSetter = GetComponentInChildren<BotLocationSetter>();
 		m_SpawnPosSetter = GetComponentInChildren<BotSpawnPosSetter>();
 		m_PrioritySetter = GetComponentInChildren<BotPrioritySetter>();
+
+		m_WindowList.Add(m_RouteSetter);
+		m_WindowList.Add(m_LocationSetter);
+		m_WindowList.Add(m_SpawnPosSetter);
+		m_WindowList.Add(m_PrioritySetter);
 	}
 
-	private void OnEnable()
+	protected override void init()
 	{
-		// 켤 때 마다 플래그의 모드를 CreateBot 으로 설정
-		onCreateModeDelegate?.Invoke();
-	}
-
-	private void OnDisable()
-	{
-		// 끌 때 마다 플래그의 모드를 CreateBot 으로 설정하고, SetOnclickEvent = null;
-		offCreateModeDelegate?.Invoke();
-		clear();
-	}
-
-	private void Update()
-	{
-		if(GameManager.GameMode != EGameMode.CreateBot)
-		{
-			this.gameObject.SetActive(false);
-		}
-	}
-
-	public void SetActive(in bool _isActive)
-	{
-		this.gameObject.SetActive(_isActive);
-	}
-
-	public void Init(in BotManager _manager)
-	{
-		m_Manager = _manager;
-
-		foreach (var setter in m_SetterList)
+		foreach (var setter in m_WindowList)
 		{
 			setter.Init();
 		}
 
+		m_SpawnPosSetter.SetPreview(m_Manager);
+
 		clear();
 	}
 
-	public void SetCallback(Delegate<Bot> _createBotCallback, 
-							Delegate _onCreateModeCallback, Delegate _offCreateModeCallback,
-							Delegate<Delegate<Flag>> _setFlagsOnClickEventCallback, Delegate<Delegate<Flag>> _setFlagsOnMouseEnterEventCallback)
+	protected override void clear()
 	{
-		createBotDelegate = _createBotCallback;
-		onCreateModeDelegate = _onCreateModeCallback;
-		offCreateModeDelegate = _offCreateModeCallback;
-		setFlagsOnClickEventDelegate = _setFlagsOnClickEventCallback;
-		setFlagsOnMouseEnterEventDelegate = _setFlagsOnMouseEnterEventCallback;
+		m_PathList.Clear();
+		m_SpawnFlag = null;
+		m_LoadFlag = null;
+		m_UnloadFlag = null;
 
-
-
-		foreach (var setter in m_SetterList)
+		foreach (var setter in m_WindowList)
 		{
-			setter.SetModeCallback(setFlagsOnClickEventDelegate);
+			setter.SetActive(false);
 		}
-
-		m_RouteSetter.SetCallback(applyRoute_Callback);
-		m_LoadAndUnloadPlaceSetter.SetCallback(applyLoadAndUnloadPlace_Callback, checkFlagInPath);
-		m_SpawnPosSetter.SetCallback(applySpawnPlag_Callback, setFlagsOnMouseEnterEventDelegate);
-		m_PrioritySetter.SetCallback(applyCreateBot_Callback, cancel_Callback);
+		m_RouteSetter.SetActive(true);
 	}
 
-	private void applyRoute_Callback(in List<Flag> _routePlagList)
+	protected override void setDelegate(in CreaterDelegates<Bot> _delegates)
 	{
-		m_PathList = _routePlagList;
+		var routeSetterDelegates = new BotRouteSetterDelegates(setFlagsOnClickEventDelegate, applyRoute_Callback);
+		m_RouteSetter.SetDelegate(routeSetterDelegates);
+
+		var lnuDelegates = new BotLocationSetterDelegates(setFlagsOnClickEventDelegate, applyLoadAndUnloadPlace_Callback, checkFlagInPath);
+		m_LocationSetter.SetDelegate(lnuDelegates);
+
+		var spawnPosSetterDelegates = new BotSpawnPosSetterDelegates(setFlagsOnClickEventDelegate, applySpawnFlag_Callback, setFlagsOnMouseEnterEventDelegate, setFlagsOnMouseExitEventDelegate);
+		m_SpawnPosSetter.SetDelegate(spawnPosSetterDelegates);
+
+		var prioritySetterDelegates = new BotPrioritySetterDelegates(setFlagsOnClickEventDelegate, applyCreateBot_Callback, cancel_Callback);
+		m_PrioritySetter.SetDelegate(prioritySetterDelegates);
+	}
+
+	private void applyRoute_Callback(in List<Flag> _routeFlagList)
+	{
+		m_PathList = _routeFlagList;
 		m_RouteSetter.SetActive(false);
-		m_LoadAndUnloadPlaceSetter.SetActive(true);
+		m_LocationSetter.SetActive(true);
 	}
 
-	private void applyLoadAndUnloadPlace_Callback(in Flag _loadPlag, in Flag _unloadFlag)
+	private void applyLoadAndUnloadPlace_Callback(in Flag _loadFlag, in Flag _unloadFlag)
 	{
-		m_LoadPlag = _loadPlag;
-		m_UnloadPlag = _unloadFlag;
+		m_LoadFlag = _loadFlag;
+		m_UnloadFlag = _unloadFlag;
 
-		m_LoadAndUnloadPlaceSetter.SetActive(false);
+		m_LocationSetter.SetActive(false);
 		m_SpawnPosSetter.SetActive(true);
 	}
 
@@ -122,7 +92,7 @@ public class BotCreater : MonoBehaviour
 		return m_PathList.Contains(_flag);
 	}
 
-	private void applySpawnPlag_Callback(in Flag _spawnFlag)
+	private void applySpawnFlag_Callback(in Flag _spawnFlag)
 	{
 		m_SpawnFlag = _spawnFlag;
 
@@ -133,35 +103,13 @@ public class BotCreater : MonoBehaviour
 	private void applyCreateBot_Callback(in int _priority)
 	{
 		m_Priority = _priority;
-		createBot();
+
+		BotInfo info = new BotInfo(m_PathList.ToList(), m_LoadFlag, m_UnloadFlag, m_SpawnFlag, m_Priority);
+		create(m_SpawnFlag.Pos, info);
 	}
+}
 
-	private void cancel_Callback(in int _num)
-	{
-		this.gameObject.SetActive(false);
-	}
-
-	private void createBot()
-	{
-		Bot bot = Instantiate(m_BotPrefab, m_SpawnFlag.Pos, Quaternion.identity, m_Manager.transform).GetComponent<Bot>();
-		bot.Init(m_PathList.ToList(), m_LoadPlag, m_UnloadPlag, m_SpawnFlag, m_Priority);
-
-		createBotDelegate?.Invoke(bot);
-
-		clear();
-	}
-
-	private void clear()
-	{
-		m_PathList.Clear();
-		m_SpawnFlag = null;
-		m_LoadPlag = null;
-		m_UnloadPlag = null;
-
-		foreach (var setter in m_SetterList)
-		{
-			setter.SetActive(false);
-		}
-		m_RouteSetter.SetActive(true);
-	}
+public class BotCreaterDelegates : CreaterDelegates<Bot>
+{
+	public BotCreaterDelegates(Delegate<Bot> _createdCallback, Delegate _onCreateModeCallback, Delegate _offCreateModeCallback, Delegate<Delegate<Flag>> _setFlagsOnClickEventCallback, Delegate<Delegate<Flag>> _setFlagsOnMouseEnterEventCallback, Delegate<Delegate<Flag>> _setFlagsOnMouseExitEventDelegate) : base(_createdCallback, _onCreateModeCallback, _offCreateModeCallback, _setFlagsOnClickEventCallback, _setFlagsOnMouseEnterEventCallback, _setFlagsOnMouseExitEventDelegate) { }
 }

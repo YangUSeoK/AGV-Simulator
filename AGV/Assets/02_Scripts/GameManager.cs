@@ -5,6 +5,7 @@ public enum EGameMode
 	Edit = 0,
 	CreateBot,
 	CreateFlag,
+	CreateLocation,
 	Play,
 
 	Length,
@@ -29,7 +30,8 @@ public class GameManager : MonoBehaviour
 		m_UIManager = GetComponentInChildren<UIManager>();
 		m_FlagManager = GetComponentInChildren<FlagManager>();
 
-		m_BotManager.SetDelegate(createBotCallback);
+		var botManagerDelegates = new BotManagerDelegates(createBotCallback);
+		m_BotManager.SetDelegate(botManagerDelegates);
 		m_UIManager.SetDelegate(startSimulation, finishSimulation, instBotCreaterCallback);
 
 		m_BotManager.Init();
@@ -50,13 +52,16 @@ public class GameManager : MonoBehaviour
 		m_GameMode = EGameMode.Edit;
 
 		m_BotManager.FinishSimulation();
+		m_FlagManager.FinishSimulation();
 	}
 
 	// From UIManager
 	private void instBotCreaterCallback(in BotCreater _botCreater)
 	{
-		m_BotManager.SetBotCreater(_botCreater, createBotCallback, startCreateBotMode, finishCreateBotMode,
-									m_FlagManager.SetFlagsOnClickEvent, m_FlagManager.SetPlagsOnMouseEnterEvent); ;
+		var botCreaterDelegates = new BotCreaterDelegates(null, startCreateBotMode, finishCreateBotMode,
+									m_FlagManager.SetOnClickEvent, m_FlagManager.SetOnMouseEnterEvent,
+									m_FlagManager.SetOnMouseExitEvent);
+		m_BotManager.SetBotCreater(_botCreater, botCreaterDelegates); 
 	}
 
 
@@ -68,9 +73,9 @@ public class GameManager : MonoBehaviour
 
 
 	// From BotManager
-	private void createBotCallback()
+	private void createBotCallback(in Bot _createdBot)
 	{
-
+		// 봇이 생성되었습니다 메세지 출력
 	}
 
 
@@ -85,6 +90,6 @@ public class GameManager : MonoBehaviour
 	private void finishCreateBotMode()
 	{
 		m_GameMode = EGameMode.Edit;
-		m_FlagManager.SetFlagsOnClickEvent(null);
+		m_FlagManager.SetOnClickEvent(null);
 	}
 }

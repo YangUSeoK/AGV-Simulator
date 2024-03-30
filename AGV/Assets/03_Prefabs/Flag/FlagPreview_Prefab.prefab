@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8496978632372214016}
   - component: {fileID: 8496978632372214019}
   - component: {fileID: 8496978632372214018}
-  - component: {fileID: 2913237447717871059}
+  - component: {fileID: 4963174150464060645}
   m_Layer: 0
   m_Name: FlagPreview_Prefab
   m_TagString: Untagged
@@ -84,7 +84,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &2913237447717871059
+--- !u!114 &4963174150464060645
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -98,3 +98,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_CanMaterial: {fileID: 2100000, guid: db9da225222a33546858b60722c45336, type: 2}
   m_CantMaterial: {fileID: 2100000, guid: 0f43688de4fd40443aaecea40cb98ddc, type: 2}
+  m_PreviewMode: 2

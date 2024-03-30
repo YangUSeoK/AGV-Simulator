@@ -2,13 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BotPreview : Preview
+public class BotPreview : Preview<Bot>
 {
-    public void OnFlagEnterEvent(in Flag _plag)
-    {
-        this.transform.position = _plag.Pos;
+	protected override void Update() { }
 
-        if (_plag.IsSpawnPlag)
+	public void OnFlagEnterEvent(in Flag _flag)
+    {
+        this.transform.position = _flag.Pos;
+
+        if (_flag.IsSpawnFlag)
         {
             m_Renderer.material = m_CantMaterial;
         }
@@ -17,4 +19,15 @@ public class BotPreview : Preview
             m_Renderer.material = m_CanMaterial;
         }
     }
+
+    public void OnFlagExitEvent(in Flag _flag)
+    {
+        m_Renderer.material = m_CantMaterial;
+    }
+
+	public override bool CanMake()
+	{
+        return true;
+	}
+
 }

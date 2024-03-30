@@ -1,41 +1,31 @@
 using UnityEngine;
-using System;
-using Delegates;
 using System.Collections.Generic;
 
-public class Flag : MonoBehaviour, IScaler
+public class Flag : Item<Flag>
 {
-	private Delegate<Flag> onClickEvent = null;
-	private Delegate<Flag> onMouseOverEvent = null;
+	public bool IsSpawnFlag => m_SpawnedBot != null;
 
-	[SerializeField] private Material m_SelectedMaterial = null;
-	[SerializeField] private Material m_OrigMaterial = null;
+	public bool IsLoadLocation => m_LoadLocation != null;
+	public bool IsUnloadLocation => m_UnloadLocation != null;
 
-	public bool IsSpawnPlag { get; set; }
-	public Vector3 Pos => this.transform.position;
+	public bool IsExistIncomingtBot => m_IncomingBot != null;
 
 	private readonly Queue<Bot> m_IncomingBotQueue = new Queue<Bot>();
 	private Bot m_IncomingBot = null;
 	public Bot IncomingBot => m_IncomingBot;
-	public bool IsExistIncomingtBot => m_IncomingBot != null;
+	
+	private Bot m_SpawnedBot = null;
+	public Bot SpawnedBot { set { m_SpawnedBot = value; } }
+
+	private Location m_LoadLocation = null;
+	public Location LoadLocation { set { m_LoadLocation = value; } }
+
+	private Location m_UnloadLocation = null;
+	public Location UnloadLocation { set { m_UnloadLocation = value; } }
 
 	private readonly float m_LeaveDistance = 1.5f;
-
-	// 색깔, 크기 설정
-	private readonly float m_UpScaleValue = 1.5f;
-	private Vector3 m_UpScale => new Vector3(m_OrigScale.x * m_UpScaleValue, m_OrigScale.y * m_UpScaleValue, m_OrigScale.z * m_UpScaleValue);
-	private Vector3 m_OrigScale = Vector3.zero;
-
-	private Renderer m_Renderer = null;
-
 	private float m_IncomingBotPostDistance = Mathf.Infinity;
 
-
-	private void Awake()
-	{
-		m_OrigScale = this.transform.localScale;
-		m_Renderer = GetComponentInChildren<Renderer>();
-	}
 
 	private void Update()
 	{
@@ -66,31 +56,6 @@ public class Flag : MonoBehaviour, IScaler
 		}
 	}
 
-	public void OnMouseUp()
-	{
-		if (GameManager.GameMode == EGameMode.CreateBot)
-		{
-			onClickEvent?.Invoke(this);
-		}
-	}
-
-	public void OnMouseEnter()
-	{
-		if (GameManager.GameMode == EGameMode.CreateBot)
-		{
-			onMouseOverEvent?.Invoke(this);
-			SetScale(m_UpScale);
-		}
-	}
-
-	public void OnMouseExit()
-	{
-		if (GameManager.GameMode == EGameMode.CreateBot)
-		{
-			SetScale(m_OrigScale);
-		}
-	}
-
 	public void EnqueueIncomingBot(in Bot _incomingBot)
 	{
 		if (m_IncomingBotQueue.Contains(_incomingBot)) return;
@@ -98,31 +63,43 @@ public class Flag : MonoBehaviour, IScaler
 		m_IncomingBotQueue.Enqueue(_incomingBot);
 	}
 
-	public void Selected(in bool _isSelected)
+	public override void StartSimulation()
 	{
-		if (_isSelected)
-		{
-			m_Renderer.material = m_SelectedMaterial;
-		}
-		else
-		{
-			m_Renderer.material = m_OrigMaterial;
-		}
 	}
 
-	public void SetScale(in Vector3 _scale)
+	public override void FinishSimulation()
 	{
-		this.transform.localScale = _scale;
+		m_IncomingBotQueue.Clear();
 	}
 
-	public void SetOnClickEvent(in Delegate<Flag> _onClickEvent)
+	protected override void onClick()
 	{
-		onClickEvent = _onClickEvent;
+		onClickDelegate?.Invoke(this);
 	}
 
-	public void SetOnMouseEnterEvent(in Delegate<Flag> _onMouseEnterEvent)
+	protected override void onMouseEnter()
 	{
-		onMouseOverEvent = _onMouseEnterEvent;
+		onMouseOverDelegate?.Invoke(this);
+		SetScale(m_UpScale);
+	}
+
+	protected override void onMouseExit()
+	{
+		onMouseExitDelegate?.Invoke(this);
+		SetScale(m_OrigScale);
+	}
+
+	protected override void clear()
+	{
+		m_IncomingBotQueue.Clear();
+		m_SpawnedBot = null;
+		m_LoadLocation = null;
+		m_UnloadLocation = null;
+	}
+
+	public override void Init(in ItemInfo<Flag> _container)
+	{
+
 	}
 }
 

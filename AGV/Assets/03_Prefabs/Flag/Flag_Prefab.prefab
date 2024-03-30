@@ -112,3 +112,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SelectedMaterial: {fileID: 2100000, guid: 2b1e320f38c8b184c814c9cb47902a21, type: 2}
   m_OrigMaterial: {fileID: 2100000, guid: 6c5288b13a371bc47b585ee1fba55d3a, type: 2}
+  m_GameMode: 2
