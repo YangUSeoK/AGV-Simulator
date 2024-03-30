@@ -1,4 +1,5 @@
 
+using Delegates;
 using UnityEngine;
 
 public class LocationManager : Manager<Location>
@@ -10,13 +11,17 @@ public class LocationManager : Manager<Location>
 		// 
 	}
 
-	public override void SetDelegate(in DelegatesInfo<Location> _delegates)
+	public override void setCreater(in CreaterDelegates<Location> _delegates)
+	{ }
+
+	protected override void setDelegate(in ManagerDelegates<Location> _delegates)
 	{
-		throw new System.NotImplementedException();
 	}
-}
 
-public class LocationManagerDelegates : DelegatesInfo<Location>
-{
-
+	public class LocationManagerDelegates : ManagerDelegates<Location>
+	{
+		public LocationManagerDelegates(in Delegate<Creater> _createCreaterCallback, in Delegate<Location> _createItemCallback) : base(_createCreaterCallback, _createItemCallback)
+		{
+		}
+	}
 }

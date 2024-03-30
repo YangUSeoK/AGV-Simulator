@@ -6,5 +6,3 @@ namespace Delegates
 
 	public delegate bool BoolDelegate<T>(in T _value);
 }
-
-public class DelegatesInfo<T> { }

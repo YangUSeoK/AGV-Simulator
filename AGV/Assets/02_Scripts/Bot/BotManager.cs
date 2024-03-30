@@ -6,25 +6,6 @@ public class BotManager : Manager<Bot>
 {
 	private Delegate<Bot> createBotDelegate = null;
 
-	private BotCreater m_Creater = null;
-
-	
-	public override void SetDelegate(in DelegatesInfo<Bot> _delegates)
-	{
-		var delegates = _delegates as BotManagerDelegates;
-
-		createBotDelegate = delegates.CreateBotDelegate;
-	}
-
-	public void SetBotCreater(in BotCreater _creater, in BotCreaterDelegates _botCreaterDelegates)
-	{
-		m_Creater = _creater;
-		_creater.Init(this, m_Prefab);
-
-		_botCreaterDelegates.CreatedDelegate = addNewBot;
-		_creater.SetDelegate(_botCreaterDelegates);
-	}
-
 	protected override void startCreateMode()
 	{
 		GameManager.GameMode = CreateMode;
@@ -42,13 +23,21 @@ public class BotManager : Manager<Bot>
 		m_List.Add(_newBot);
 		createBotDelegate?.Invoke(_newBot);
 	}
+
+	public override void setCreater(in CreaterDelegates<Bot> _delegates)
+	{
+		var delegates = _delegates as BotCreaterDelegates;
+		delegates.CreatedDelegate = addNewBot;
+	}
+
+	protected override void setDelegate(in ManagerDelegates<Bot> _delegates)
+	{
+	}
 }
 
-public class BotManagerDelegates : DelegatesInfo<Bot>
+public class BotManagerDelegates : ManagerDelegates<Bot>
 {
-	public BotManagerDelegates(in Delegate<Bot> _createBotCallback)
+	public BotManagerDelegates(in Delegate<Creater> _createCreaterCallback, in Delegate<Bot> _createItemCallback) : base(_createCreaterCallback, _createItemCallback)
 	{
-		CreateBotDelegate = _createBotCallback;
 	}
-	public Delegate<Bot> CreateBotDelegate { get; }
 }

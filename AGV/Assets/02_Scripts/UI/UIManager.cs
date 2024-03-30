@@ -7,46 +7,33 @@ public class UIManager : MonoBehaviour
 {
 	private Delegate startSimulationDelegate = null;
 	private Delegate finishSimulationDelegate = null;
-	private Delegate<BotCreater> instBotCreaterDelegate = null;
-
-	[SerializeField] private GameObject BotCreaterPrefab = null;
 
 	[SerializeField] private Toggle m_PlayToggle = null;
-	[SerializeField] private Toggle m_CreateBotModeToggle = null;
+	[SerializeField] private Transform m_CreaterPos = null;
 
 	private readonly List<GameObject> m_UiList = new List<GameObject>();
-
-	private BotCreater m_BotCreater = null;
-	public BotCreater BotCreater
-	{
-		set
-		{
-			m_BotCreater = value;
-			m_UiList.Add(m_BotCreater.gameObject);
-		}
-	}
 
 	public void StartSimulation()
 	{
 		offAllUI();
 	}
 
+	public void SetCreater(Creater _creater)
+	{
+		_creater.transform.SetParent(m_CreaterPos);
+		_creater.transform.localPosition = Vector3.zero;
+		m_UiList.Add(_creater.gameObject);
+	}
+
 	public void Init()
 	{
-		m_BotCreater = Instantiate(BotCreaterPrefab, this.transform).GetComponent<BotCreater>();
-		instBotCreaterDelegate?.Invoke(m_BotCreater);
-
-		m_BotCreater.SetActive(false);
-
 		setEvent();
 	}
 
-	public void SetDelegate(in Delegate _startSimulationCallback, in Delegate _finishSimulationCallback,
-							in Delegate<BotCreater> _instBotCreaterCallback)
+	public void SetDelegate(in UIManagerDelegates _delegates)
 	{
-		startSimulationDelegate = _startSimulationCallback;
-		finishSimulationDelegate = _finishSimulationCallback;
-		instBotCreaterDelegate = _instBotCreaterCallback;
+		startSimulationDelegate = _delegates.StartSimulationDelegate;
+		finishSimulationDelegate = _delegates.FinishSimulationDelegate;
 	}
 
 	private void setEvent()
@@ -78,4 +65,16 @@ public class UIManager : MonoBehaviour
 			ui.SetActive(false);
 		}
 	}
+}
+
+public class UIManagerDelegates
+{
+	public UIManagerDelegates(in Delegate _startSimulationCallback,  in Delegate _finishSimulationCallback)
+	{
+		StartSimulationDelegate = _startSimulationCallback;
+		FinishSimulationDelegate = _finishSimulationCallback;
+	}
+
+	public Delegate StartSimulationDelegate { get; }
+	public Delegate FinishSimulationDelegate { get; }
 }

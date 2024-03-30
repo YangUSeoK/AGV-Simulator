@@ -30,13 +30,20 @@ public class GameManager : MonoBehaviour
 		m_UIManager = GetComponentInChildren<UIManager>();
 		m_FlagManager = GetComponentInChildren<FlagManager>();
 
-		var botManagerDelegates = new BotManagerDelegates(createBotCallback);
+		var botManagerDelegates = new BotManagerDelegates(createrCreateCallback, createBotCallback);
 		m_BotManager.SetDelegate(botManagerDelegates);
-		m_UIManager.SetDelegate(startSimulation, finishSimulation, instBotCreaterCallback);
 
-		m_BotManager.Init();
+		var uiManagerDelegates = new UIManagerDelegates(startSimulation, finishSimulation);
+		m_UIManager.SetDelegate(uiManagerDelegates);
+
+		var botCreaterDelegates = new BotCreaterDelegates(null, startCreateBotMode, finishCreateBotMode,
+									m_FlagManager.SetOnClickEvent, m_FlagManager.SetOnMouseEnterEvent,
+									m_FlagManager.SetOnMouseExitEvent);
+		m_BotManager.Init(botCreaterDelegates);
 		m_UIManager.Init();
-		m_FlagManager.Init();
+
+		var flagCreaterDelegates = new FlagCreaterDelegates();
+		m_FlagManager.Init(flagCreaterDelegates);
 	}
 
 	private void startSimulation()
@@ -56,16 +63,6 @@ public class GameManager : MonoBehaviour
 	}
 
 	// From UIManager
-	private void instBotCreaterCallback(in BotCreater _botCreater)
-	{
-		var botCreaterDelegates = new BotCreaterDelegates(null, startCreateBotMode, finishCreateBotMode,
-									m_FlagManager.SetOnClickEvent, m_FlagManager.SetOnMouseEnterEvent,
-									m_FlagManager.SetOnMouseExitEvent);
-		m_BotManager.SetBotCreater(_botCreater, botCreaterDelegates); 
-	}
-
-
-
 
 	// From FlagManager
 
@@ -92,4 +89,11 @@ public class GameManager : MonoBehaviour
 		m_GameMode = EGameMode.Edit;
 		m_FlagManager.SetOnClickEvent(null);
 	}
+
+	private void createrCreateCallback(in Creater _creater)
+	{
+		m_UIManager.SetCreater(_creater);
+	}
+
+
 }
