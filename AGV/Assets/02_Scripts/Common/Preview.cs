@@ -1,15 +1,14 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public abstract class Preview<T> : MonoBehaviour where T : Item<T>
+public abstract class Preview : MonoBehaviour
 {
 	[SerializeField] protected Material m_CanMaterial = null;
 	[SerializeField] protected Material m_CantMaterial = null;
-
-	protected Manager<T> m_Creater = null;
-	protected Renderer m_Renderer = null;
-
+	
 	public Vector3 Pos => this.transform.position;
+
+	protected Renderer m_Renderer = null;
 
 	protected virtual void Awake()
 	{
@@ -21,27 +20,6 @@ public abstract class Preview<T> : MonoBehaviour where T : Item<T>
 		clear();
 	}
 
-	protected virtual void Update()
-	{
-		if (GameManager.GameMode != m_Creater.CreateMode)
-		{
-			this.gameObject.SetActive(false);
-		}
-
-		Vector3 createVec = Input.mousePosition;
-		createVec.z = Camera.main.transform.position.y;
-		this.transform.position = Camera.main.ScreenToWorldPoint(createVec);
-
-		if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
-		{
-			m_Creater.Create(this.transform.position);
-		}
-	}
-
-	public void Init(in Manager<T> _creater)
-	{
-		m_Creater = _creater;
-	}
 	public void SetActive(in bool _isActive)
 	{
 		this.gameObject.SetActive(_isActive);
@@ -53,4 +31,31 @@ public abstract class Preview<T> : MonoBehaviour where T : Item<T>
 	}
 
 	public abstract bool CanMake();
+}
+
+public abstract class Preview<T> : Preview where T : Item<T>
+{
+	protected Manager<T> m_Manager = null;
+	
+	protected virtual void Update()
+	{
+		if (GameManager.GameMode != m_Manager.CreateMode)
+		{
+			this.gameObject.SetActive(false);
+		}
+
+		Vector3 createVec = Input.mousePosition;
+		createVec.z = Camera.main.transform.position.y;
+		this.transform.position = Camera.main.ScreenToWorldPoint(createVec);
+
+		if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
+		{
+			m_Manager.Create(this.transform.position);
+		}
+	}
+
+	public void Init(in Manager<T> _manager)
+	{
+		m_Manager = _manager;
+	}
 }

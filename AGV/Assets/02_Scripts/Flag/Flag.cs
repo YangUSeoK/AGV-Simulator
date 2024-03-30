@@ -70,6 +70,9 @@ public class Flag : Item<Flag>
 	public override void FinishSimulation()
 	{
 		m_IncomingBotQueue.Clear();
+		onClickDelegate = null;
+		onMouseOverDelegate = null;
+		onMouseExitDelegate = null;
 	}
 
 	protected override void onClick()

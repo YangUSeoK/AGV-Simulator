@@ -44,7 +44,7 @@ public class BotLocationSetter : BotCreaterWindow
 		m_SetLoadPlaceButton.onClick.AddListener(() => onClickDelegate = setLoadPlace);
 		m_SetUnloadPlaceButton.onClick.AddListener(() => onClickDelegate = setUnloadPlace);
 
-		//TODO
+		// TODO..
 		m_BackButton.onClick.AddListener(() => { });
 	}
 

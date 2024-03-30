@@ -4,7 +4,6 @@ using Delegates;
 
 public class BotCreater : Creater<Bot>
 {
-	private readonly List<BotCreaterWindow> m_WindowList = new List<BotCreaterWindow>();
 	private BotRouteSetter m_RouteSetter = null;
 	private BotLocationSetter m_LocationSetter = null;
 	private BotSpawnPosSetter m_SpawnPosSetter = null;
@@ -105,11 +104,11 @@ public class BotCreater : Creater<Bot>
 		m_Priority = _priority;
 
 		BotInfo info = new BotInfo(m_PathList.ToList(), m_LoadFlag, m_UnloadFlag, m_SpawnFlag, m_Priority);
-		create(m_SpawnFlag.Pos, info);
+		Create(m_SpawnFlag.Pos, info);
 	}
 }
 
 public class BotCreaterDelegates : CreaterDelegates<Bot>
 {
-	public BotCreaterDelegates(Delegate<Bot> _createdCallback, Delegate _onCreateModeCallback, Delegate _offCreateModeCallback, Delegate<Delegate<Flag>> _setFlagsOnClickEventCallback, Delegate<Delegate<Flag>> _setFlagsOnMouseEnterEventCallback, Delegate<Delegate<Flag>> _setFlagsOnMouseExitEventDelegate) : base(_createdCallback, _onCreateModeCallback, _offCreateModeCallback, _setFlagsOnClickEventCallback, _setFlagsOnMouseEnterEventCallback, _setFlagsOnMouseExitEventDelegate) { }
+	public BotCreaterDelegates(Delegate<Bot> _createdCallback, Delegate<EGameMode> _startCreateModeCallback, Delegate _finishCreateModeCallback, Delegate<Delegate<Flag>> _setFlagsOnClickEventCallback, Delegate<Delegate<Flag>> _setFlagsOnMouseEnterEventCallback, Delegate<Delegate<Flag>> _setFlagsOnMouseExitEventDelegate) : base(_createdCallback, _startCreateModeCallback, _finishCreateModeCallback, _setFlagsOnClickEventCallback, _setFlagsOnMouseEnterEventCallback, _setFlagsOnMouseExitEventDelegate) { }
 }

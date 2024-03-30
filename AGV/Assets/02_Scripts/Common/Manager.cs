@@ -1,13 +1,11 @@
 using Delegates;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public abstract class Manager<T> : MonoBehaviour where T : Item<T>
+public class Manager : MonoBehaviour
 {
 	protected Delegate<Creater> createCreaterDelegate = null;
-	protected Delegate<T> createItemDelegate = null; 
 
 	[SerializeField] protected GameObject m_Prefab = null;
 	[SerializeField] protected GameObject m_PreviewPrefab = null;
@@ -17,10 +15,15 @@ public abstract class Manager<T> : MonoBehaviour where T : Item<T>
 
 	[SerializeField] protected EGameMode m_CreateMode;
 	public EGameMode CreateMode => m_CreateMode;
+}
+
+public abstract class Manager<T> : Manager where T : Item<T>
+{
+	protected Delegate<T> createItemDelegate = null;
 
 	protected Creater<T> m_Creater = null;
-
 	protected Preview<T> m_Preview = null;
+
 	protected readonly List<T> m_List = new List<T>();
 	public List<T> List => m_List;
 
@@ -56,7 +59,7 @@ public abstract class Manager<T> : MonoBehaviour where T : Item<T>
 
 	public virtual void StartSimulation()
 	{
-		foreach(var item in m_List)
+		foreach (var item in m_List)
 		{
 			item.StartSimulation();
 		}
@@ -72,14 +75,14 @@ public abstract class Manager<T> : MonoBehaviour where T : Item<T>
 
 	public virtual void Create(in Vector3 _createPos)
 	{
-		T item = Instantiate(m_Prefab, _createPos, Quaternion.identity, this.transform).GetComponent<T>();
+		T item = m_Creater.Create(_createPos);
 		m_List.Add(item);
 	}
 
 	public void SetCreater(in CreaterDelegates<T> _delegates)
 	{
 		m_Creater = Instantiate(m_CreaterPrefab).GetComponent<Creater<T>>();
-	
+
 		m_Preview = Instantiate(m_PreviewPrefab, this.transform).GetComponent<Preview<T>>();
 		m_Preview.Init(this);
 		m_Preview.SetActive(false);
@@ -127,7 +130,7 @@ public abstract class Manager<T> : MonoBehaviour where T : Item<T>
 		m_Preview.SetActive(false);
 	}
 
-	public virtual void SetDelegate(in ManagerDelegates<T> _delegates)
+	public void SetDelegate(in ManagerDelegates<T> _delegates)
 	{
 		createCreaterDelegate = _delegates.CreateCreaterDelegate;
 		setDelegate(_delegates);

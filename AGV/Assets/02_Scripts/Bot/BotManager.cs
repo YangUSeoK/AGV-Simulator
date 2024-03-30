@@ -4,8 +4,6 @@ using Delegates;
 
 public class BotManager : Manager<Bot>
 {
-	private Delegate<Bot> createBotDelegate = null;
-
 	protected override void startCreateMode()
 	{
 		GameManager.GameMode = CreateMode;
@@ -21,7 +19,7 @@ public class BotManager : Manager<Bot>
 	private void addNewBot(in Bot _newBot)
 	{
 		m_List.Add(_newBot);
-		createBotDelegate?.Invoke(_newBot);
+		createItemDelegate?.Invoke(_newBot);
 	}
 
 	public override void setCreater(in CreaterDelegates<Bot> _delegates)

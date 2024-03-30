@@ -62,6 +62,11 @@ public class GameManager : MonoBehaviour
 		m_FlagManager.FinishSimulation();
 	}
 
+	private void createrCreateCallback(in Creater _creater)
+	{
+		m_UIManager.SetCreater(_creater);
+	}
+
 	// From UIManager
 
 	// From FlagManager
@@ -75,25 +80,17 @@ public class GameManager : MonoBehaviour
 		// 봇이 생성되었습니다 메세지 출력
 	}
 
-
-
-
 	// events
-	private void startCreateBotMode()
+	private void startCreateBotMode(in EGameMode _gameMode)
 	{
-		m_GameMode = EGameMode.CreateBot;
+		m_GameMode = _gameMode;
 	}
 
 	private void finishCreateBotMode()
 	{
 		m_GameMode = EGameMode.Edit;
+		
+		// TODO.. Edit Mode의 Click 이벤트 넣어줘야 함
 		m_FlagManager.SetOnClickEvent(null);
 	}
-
-	private void createrCreateCallback(in Creater _creater)
-	{
-		m_UIManager.SetCreater(_creater);
-	}
-
-
 }

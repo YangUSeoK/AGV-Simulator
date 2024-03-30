@@ -45,7 +45,7 @@ public class BotPrioritySetter : BotCreaterWindow
 			cancelDelegate?.Invoke();
 		});
 
-		//TODO
+		// TODO..
 		m_BackButton.onClick.AddListener(() => { });
 	}
 

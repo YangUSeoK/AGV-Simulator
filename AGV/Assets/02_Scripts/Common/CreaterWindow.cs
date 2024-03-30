@@ -1,7 +1,7 @@
 using Delegates;
 using UnityEngine;
 
-public abstract class CreaterWindow<T> : MonoBehaviour where T : Item<T>
+public abstract class CreaterWindow : MonoBehaviour
 {
 	protected Delegate<Delegate<Flag>> setModeDelegate = null;
 
@@ -21,6 +21,20 @@ public abstract class CreaterWindow<T> : MonoBehaviour where T : Item<T>
 		clear();
 	}
 
+	public void SetActive(in bool _isActive)
+	{
+		this.gameObject.SetActive(_isActive);
+	}
+
+	public abstract void Init();
+	
+	protected abstract void clear();
+	protected abstract void setFlagsOnClickEvent(in Flag _flag);
+	protected abstract void setButtonEvent();
+}
+
+public abstract class CreaterWindow<T> : CreaterWindow where T : Item<T>
+{
 	public virtual void SetDelegate(in CreaterWindowDelegates<T> _delegates)
 	{
 		setModeDelegate = _delegates.setModeDelegate;
@@ -28,16 +42,7 @@ public abstract class CreaterWindow<T> : MonoBehaviour where T : Item<T>
 		setDelegate(_delegates);
 	}
 
-	public void SetActive(in bool _isActive)
-	{
-		this.gameObject.SetActive(_isActive);
-	}
-
-	public abstract void Init();
 	protected abstract void setDelegate(in CreaterWindowDelegates<T> _delegates);
-	protected abstract void clear();
-	protected abstract void setFlagsOnClickEvent(in Flag _flag);
-	protected abstract void setButtonEvent();
 }
 
 public class CreaterWindowDelegates<T>

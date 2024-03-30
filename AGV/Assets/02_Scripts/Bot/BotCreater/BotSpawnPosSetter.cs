@@ -71,7 +71,7 @@ public class BotSpawnPosSetter : BotCreaterWindow
 
 	protected override void setButtonEvent()
 	{
-		//TODO
+		// TODO..
 		m_BackButton.onClick.AddListener(() => { });
 	}
 

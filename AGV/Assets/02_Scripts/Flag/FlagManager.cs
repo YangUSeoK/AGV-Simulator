@@ -7,11 +7,6 @@ public class FlagManager : Manager<Flag>
 	{
 	}
 
-	public override void SetDelegate(in ManagerDelegates<Flag> _delegates)
-	{
-
-	}
-
 	protected override void setDelegate(in ManagerDelegates<Flag> _delegates)
 	{
 	}
