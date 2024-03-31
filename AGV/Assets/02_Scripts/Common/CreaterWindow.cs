@@ -13,7 +13,7 @@ public abstract class CreaterWindow : MonoBehaviour
 	protected virtual void OnEnable()
 	{
 		clear();
-		setModeDelegate?.Invoke(setFlagsOnClickEvent);
+		setModeDelegate?.Invoke(flagsOnClickEvent);	// 플래그를 클릭하면 실행될 함수를 연결
 	}
 
 	protected virtual void OnDisable()
@@ -29,12 +29,15 @@ public abstract class CreaterWindow : MonoBehaviour
 	public abstract void Init();
 	
 	protected abstract void clear();
-	protected abstract void setFlagsOnClickEvent(in Flag _flag);
+	protected abstract void flagsOnClickEvent(in Flag _flag); // 플래그를 클릭하면 실행될 함수
 	protected abstract void setButtonEvent();
 }
 
 public abstract class CreaterWindow<T> : CreaterWindow where T : Item<T>
 {
+	protected T m_Item = null;
+	public T Item { set{ m_Item = value;} }
+
 	public virtual void SetDelegate(in CreaterWindowDelegates<T> _delegates)
 	{
 		setModeDelegate = _delegates.setModeDelegate;

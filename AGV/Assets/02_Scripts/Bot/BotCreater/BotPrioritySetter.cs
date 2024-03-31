@@ -49,7 +49,7 @@ public class BotPrioritySetter : BotCreaterWindow
 		m_BackButton.onClick.AddListener(() => { });
 	}
 
-	protected override void setFlagsOnClickEvent(in Flag _flag)
+	protected override void flagsOnClickEvent(in Flag _flag)
 	{
 
 	}

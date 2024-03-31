@@ -71,18 +71,19 @@ public class Flag : Item<Flag>
 	{
 		m_IncomingBotQueue.Clear();
 		onClickDelegate = null;
-		onMouseOverDelegate = null;
+		onMouseEnterDelegate = null;
 		onMouseExitDelegate = null;
 	}
 
 	protected override void onClick()
 	{
+		Debug.Log("Flag Click");
 		onClickDelegate?.Invoke(this);
 	}
 
 	protected override void onMouseEnter()
 	{
-		onMouseOverDelegate?.Invoke(this);
+		onMouseEnterDelegate?.Invoke(this);
 		SetScale(m_UpScale);
 	}
 

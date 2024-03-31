@@ -72,17 +72,18 @@ public abstract class Item : MonoBehaviour
 public abstract class Item<T> : Item where T : MonoBehaviour
 {
 	protected Delegate<T> onClickDelegate = null;
-	protected Delegate<T> onMouseOverDelegate = null;
+	protected Delegate<T> onMouseEnterDelegate = null;
 	protected Delegate<T> onMouseExitDelegate = null;
 
 	public void SetOnClickEvent(in Delegate<T> _onClickEvent)
 	{
+		Debug.Log("onClickEvent");
 		onClickDelegate = _onClickEvent;
 	}
 
 	public void SetOnMouseEnterEvent(in Delegate<T> _onMouseEnterEvent)
 	{
-		onMouseOverDelegate = _onMouseEnterEvent;
+		onMouseEnterDelegate = _onMouseEnterEvent;
 	}
 
 	public void SetOnMouseExitEvent(in Delegate<T> _onMouseExitEvent)

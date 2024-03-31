@@ -75,7 +75,7 @@ public class BotSpawnPosSetter : BotCreaterWindow
 		m_BackButton.onClick.AddListener(() => { });
 	}
 
-	protected override void setFlagsOnClickEvent(in Flag _flag)
+	protected override void flagsOnClickEvent(in Flag _flag)
 	{
 		if (_flag.IsSpawnFlag) return;
 

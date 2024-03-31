@@ -44,8 +44,6 @@ public abstract class Creater<T> : Creater where T : Item<T>
 
 	protected virtual void OnEnable()
 	{
-		Debug.Log(setFlagsOnMouseEnterEventDelegate == null);
-		Debug.Log(setFlagsOnMouseExitEventDelegate == null);
 		// 켤 때 마다 플래그의 모드를 설정
 		startCreateModeDelegate?.Invoke(m_Manager.CreateMode);
 	}
@@ -112,7 +110,14 @@ public class CreaterDelegates<T>
 		SetFlagsOnMouseExitEventDelegate = _setFlagsOnMouseExitEventDelegate;
 	}
 
-	public CreaterDelegates() { }
+	public CreaterDelegates(in Delegate<Delegate<Flag>> _setFlagsOnClickEventCallback)
+	{
+		SetFlagsOnClickEventDelegate = _setFlagsOnClickEventCallback;
+	}
+
+	public CreaterDelegates()
+	{
+	}
 
 	public Delegate<T> CreatedDelegate { get; set; }
 	public Delegate<EGameMode> StartCreateModeDelegate { get; }

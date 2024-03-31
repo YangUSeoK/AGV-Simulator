@@ -14,7 +14,7 @@ public class FlagManager : Manager<Flag>
 
 public class FlagManagerDelegates : ManagerDelegates<Flag>
 {
-	public FlagManagerDelegates(in Delegate<Creater> _createCreaterCallback, in Delegate<Flag> _createItemCallback) : base(_createCreaterCallback, _createItemCallback)
+	public FlagManagerDelegates(in Delegate<Creater> _createCreaterCallback, in Delegate<Item> _createItemCallback) : base(_createCreaterCallback, _createItemCallback)
 	{
 	}
 }

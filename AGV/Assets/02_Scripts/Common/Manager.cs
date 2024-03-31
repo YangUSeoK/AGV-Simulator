@@ -19,7 +19,7 @@ public class Manager : MonoBehaviour
 
 public abstract class Manager<T> : Manager where T : Item<T>
 {
-	protected Delegate<T> createItemDelegate = null;
+	protected Delegate<Item> createItemDelegate = null;
 
 	protected Creater<T> m_Creater = null;
 	protected Preview<T> m_Preview = null;
@@ -142,12 +142,12 @@ public abstract class Manager<T> : Manager where T : Item<T>
 
 public class ManagerDelegates<T> where T : Item<T>
 {
-	public ManagerDelegates(in Delegate<Creater> _createCreaterCallback, in Delegate<T> _createItemCallback)
+	public ManagerDelegates(in Delegate<Creater> _createCreaterCallback, in Delegate<Item> _createItemCallback)
 	{
 		CreateCreaterDelegate = _createCreaterCallback;
 		CreateItemDelegate = _createItemCallback;
 	}
 
 	public Delegate<Creater> CreateCreaterDelegate { get; }
-	public Delegate<T> CreateItemDelegate { get; }
+	public Delegate<Item> CreateItemDelegate { get; }
 }

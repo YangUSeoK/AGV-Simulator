@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LocationPreview : Preview<Location>
 {
-	public override bool CanMake()
+	protected override bool canMake()
 	{
 		return true;
 	}

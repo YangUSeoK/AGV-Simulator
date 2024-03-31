@@ -30,7 +30,7 @@ public abstract class Preview : MonoBehaviour
 		m_Renderer.material = m_CantMaterial;
 	}
 
-	public abstract bool CanMake();
+	protected abstract bool canMake();
 }
 
 public abstract class Preview<T> : Preview where T : Item<T>
@@ -48,7 +48,7 @@ public abstract class Preview<T> : Preview where T : Item<T>
 		createVec.z = Camera.main.transform.position.y;
 		this.transform.position = Camera.main.ScreenToWorldPoint(createVec);
 
-		if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
+		if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject() && canMake())
 		{
 			m_Manager.Create(this.transform.position);
 		}

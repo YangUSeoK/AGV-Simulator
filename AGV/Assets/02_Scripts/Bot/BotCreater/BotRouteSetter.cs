@@ -67,7 +67,7 @@ public class BotRouteSetter : BotCreaterWindow
 		});
 	}
 
-	protected override void setFlagsOnClickEvent(in Flag _flag)
+	protected override void flagsOnClickEvent(in Flag _flag)
 	{
 		m_SelectedFlagList.Add(_flag);
 

@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using UnityEngine;
 using Delegates;
 
 public class BotManager : Manager<Bot>
@@ -35,7 +33,7 @@ public class BotManager : Manager<Bot>
 
 public class BotManagerDelegates : ManagerDelegates<Bot>
 {
-	public BotManagerDelegates(in Delegate<Creater> _createCreaterCallback, in Delegate<Bot> _createItemCallback) : base(_createCreaterCallback, _createItemCallback)
+	public BotManagerDelegates(in Delegate<Creater> _createCreaterCallback, in Delegate<Item> _createItemCallback) : base(_createCreaterCallback, _createItemCallback)
 	{
 	}
 }

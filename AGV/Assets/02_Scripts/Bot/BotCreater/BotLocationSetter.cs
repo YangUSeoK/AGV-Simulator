@@ -48,7 +48,7 @@ public class BotLocationSetter : BotCreaterWindow
 		m_BackButton.onClick.AddListener(() => { });
 	}
 
-	protected override void setFlagsOnClickEvent(in Flag _plag)
+	protected override void flagsOnClickEvent(in Flag _plag)
 	{
 		onClickDelegate?.Invoke(_plag);
 	}
