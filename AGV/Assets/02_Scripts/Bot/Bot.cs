@@ -44,9 +44,19 @@ public class Bot : Item<Bot>
 	public bool CanGoNext => !m_Path[nextIdx].IsExistIncomingtBot
 						   || m_Path[nextIdx].IncomingBot == this;
 
+	public bool CanLoad => m_LoadFlag.CanLoad && m_MaxFreight > m_CurFreight;
+
+
 	private int m_CurIdx = 0;
 	public int CurIdx => m_CurIdx;
 	private int nextIdx => (m_CurIdx + 1) % m_Path.Count;
+
+
+	private readonly int m_MaxFreight = 3;
+	private int m_CurFreight = 0;
+
+	private readonly int m_LoadCnt = 1;
+	private readonly int m_UnloadCnt = 1;
 
 	protected override void Awake()
 	{
@@ -91,6 +101,17 @@ public class Bot : Item<Bot>
 		}
 	}
 
+	public void Load()
+	{
+		m_CurFreight += m_Path[m_CurIdx].Load(m_LoadCnt);
+	}
+
+	public void Unload()
+	{
+		m_CurFreight = Mathf.Clamp(m_CurFreight - m_UnloadCnt, 0, m_CurFreight - m_UnloadCnt);
+		m_Path[m_CurIdx].Unload(m_UnloadCnt);
+	}	
+
 	public void FinishLoadUnload()
 	{
 		setMoveState();
@@ -127,18 +148,6 @@ public class Bot : Item<Bot>
 		m_SM = new BotStateMachine(this);
 	}
 
-	protected override void onClick()
-	{
-	}
-
-	protected override void onMouseEnter()
-	{
-	}
-
-	protected override void onMouseExit()
-	{
-	}
-
 	protected override void clear()
 	{
 		m_Agent.ResetPath();
@@ -155,6 +164,10 @@ public class Bot : Item<Bot>
 		m_Path[nextIdx].EnqueueIncomingBot(this);
 		m_SM.SetState(m_SM.MoveWait);
 	}
+
+	protected override void onClick() { }
+	protected override void onMouseEnter() { }
+	protected override void onMouseExit() { }
 }
 
 public class BotInfo : ItemInfo<Bot>
@@ -168,9 +181,9 @@ public class BotInfo : ItemInfo<Bot>
 		Priority = _priority;
 	}
 
-	public List<Flag> Path { get;}
-	public Flag LoadFlag { get;}
-	public Flag UnloadFlag { get;}
-	public Flag SpawnFlag { get;}
-	public int Priority { get;}
+	public List<Flag> Path { get; }
+	public Flag LoadFlag { get; }
+	public Flag UnloadFlag { get; }
+	public Flag SpawnFlag { get; }
+	public int Priority { get; }
 }

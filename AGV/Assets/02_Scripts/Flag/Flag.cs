@@ -13,7 +13,7 @@ public class Flag : Item<Flag>
 	private readonly Queue<Bot> m_IncomingBotQueue = new Queue<Bot>();
 	private Bot m_IncomingBot = null;
 	public Bot IncomingBot => m_IncomingBot;
-	
+
 	private Bot m_SpawnedBot = null;
 	public Bot SpawnedBot { set { m_SpawnedBot = value; } }
 
@@ -22,6 +22,8 @@ public class Flag : Item<Flag>
 
 	private Location m_UnloadLocation = null;
 	public Location UnloadLocation { set { m_UnloadLocation = value; } }
+
+	public bool CanLoad => m_LoadLocation.CanLoad;
 
 	private readonly float m_LeaveDistance = 1.5f;
 	private float m_IncomingBotPostDistance = Mathf.Infinity;
@@ -63,10 +65,6 @@ public class Flag : Item<Flag>
 		m_IncomingBotQueue.Enqueue(_incomingBot);
 	}
 
-	public override void StartSimulation()
-	{
-	}
-
 	public override void FinishSimulation()
 	{
 		m_IncomingBotQueue.Clear();
@@ -75,9 +73,18 @@ public class Flag : Item<Flag>
 		onMouseExitDelegate = null;
 	}
 
+	public int Load(in int _cnt)
+	{
+		return m_LoadLocation.Load(_cnt);
+	}
+
+	public void Unload(in int _cnt)
+	{
+		m_UnloadLocation.Unload(_cnt);
+	}
+
 	protected override void onClick()
 	{
-		Debug.Log("Flag Click");
 		onClickDelegate?.Invoke(this);
 	}
 
@@ -101,9 +108,8 @@ public class Flag : Item<Flag>
 		m_UnloadLocation = null;
 	}
 
-	public override void Init(in ItemInfo<Flag> _container)
-	{
 
-	}
+	public override void StartSimulation() { }
+	public override void Init(in ItemInfo<Flag> _container) { }
 }
 

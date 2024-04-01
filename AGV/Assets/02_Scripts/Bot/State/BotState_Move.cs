@@ -1,6 +1,3 @@
-using UnityEngine;
-using Delegates;
-
 public class BotState_Move : BotState
 {
 	public BotState_Move(in Bot _bot, in BotStateMachine _matchine) : base(_bot, _matchine) { }

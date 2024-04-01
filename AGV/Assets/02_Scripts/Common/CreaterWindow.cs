@@ -36,7 +36,7 @@ public abstract class CreaterWindow : MonoBehaviour
 public abstract class CreaterWindow<T> : CreaterWindow where T : Item<T>
 {
 	protected T m_Item = null;
-	public T Item { set{ m_Item = value;} }
+	public T Item { get => m_Item; set { m_Item = value; } }
 
 	public virtual void SetDelegate(in CreaterWindowDelegates<T> _delegates)
 	{

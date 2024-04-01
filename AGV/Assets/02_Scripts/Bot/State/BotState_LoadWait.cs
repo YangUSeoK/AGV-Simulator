@@ -1,8 +1,3 @@
-using Delegates;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class BotState_LoadWait : BotState
 {
 	public BotState_LoadWait(in Bot _bot, in BotStateMachine _matchine) : base(_bot, _matchine) { }
