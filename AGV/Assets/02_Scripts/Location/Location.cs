@@ -3,18 +3,19 @@ using System.Collections.Generic;
 
 public class Location : Item<Location>
 {
-	private List<Flag> m_LoadLocationList = new List<Flag>();
-	private List<Flag> m_UnloadLocationList = new List<Flag>();
+	public bool CanLoad => m_CurLoadCnt > 0;
 
-	private int m_MaxLoadCnt = 5;
+	private readonly List<Flag> m_LoadLocationList = new List<Flag>();
+	private readonly List<Flag> m_UnloadLocationList = new List<Flag>();
+
+	private readonly int m_MaxLoadCnt = 5;
 	public int MaxLoadCnt => m_MaxLoadCnt;
 
 	private int m_CurLoadCnt = 0;
-	public int CurLoadCnt => m_CurLoadCnt;
 
-	public void Load(in int _cnt)
+	public int Load(in int _cnt)
 	{
-		m_CurLoadCnt = Mathf.Clamp(m_CurLoadCnt + _cnt, m_CurLoadCnt + _cnt, m_MaxLoadCnt);
+		return m_CurLoadCnt = Mathf.Clamp(m_CurLoadCnt + _cnt, m_CurLoadCnt + _cnt, m_MaxLoadCnt);
 	}
 
 	public void Unload(in int _cnt)
@@ -52,18 +53,10 @@ public class Location : Item<Location>
 
 	public void RemoveUnloadLocationList(in Flag _unloadFlag)
 	{
-		if(m_UnloadLocationList.Contains(_unloadFlag))
+		if (m_UnloadLocationList.Contains(_unloadFlag))
 		{
 			m_UnloadLocationList.Remove(_unloadFlag);
 		}
-	}
-
-	public override void StartSimulation()
-	{
-	}
-
-	public override void FinishSimulation()
-	{
 	}
 
 	protected override void onClick()
@@ -81,14 +74,10 @@ public class Location : Item<Location>
 		onMouseExitDelegate?.Invoke(this);
 	}
 
-	protected override void clear()
-	{
-	}
-
-	public override void Init(in ItemInfo<Location> _container)
-	{
-
-	}
+	public override void StartSimulation() { }
+	public override void FinishSimulation() { }
+	public override void Init(in ItemInfo<Location> _container) { }
+	protected override void clear() { }
 }
 
 public class LocationInfo : ItemInfo<Location>

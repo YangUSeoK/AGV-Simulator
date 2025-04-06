@@ -1,4 +1,3 @@
-
 using Delegates;
 
 public class FlagManager : Manager<Flag>

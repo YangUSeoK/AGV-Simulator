@@ -1,4 +1,3 @@
-
 using UnityEngine;
 
 public class BotPreview : Preview<Bot>
@@ -37,5 +36,9 @@ public class BotPreview : Preview<Bot>
 	protected override bool canMake()
 	{
 		return true;
+	}
+
+	protected override void clickAction(Vector3 _pos)
+	{
 	}
 }

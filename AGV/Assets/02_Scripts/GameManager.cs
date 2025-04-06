@@ -1,5 +1,4 @@
 using UnityEngine;
-using static LocationManager;
 
 public enum EGameMode
 {
@@ -95,7 +94,7 @@ public class GameManager : MonoBehaviour
 
 	private void createItemCallback(in Item _createdItem)
 	{
-
+		Debug.Log("create");
 	}
 
 	// From UIManager

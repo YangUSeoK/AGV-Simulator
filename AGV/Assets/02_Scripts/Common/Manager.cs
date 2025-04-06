@@ -133,6 +133,7 @@ public abstract class Manager<T> : Manager where T : Item<T>
 	public void SetDelegate(in ManagerDelegates<T> _delegates)
 	{
 		createCreaterDelegate = _delegates.CreateCreaterDelegate;
+		createItemDelegate = _delegates.CreateItemDelegate;
 		setDelegate(_delegates);
 	}
 	public abstract void setCreater(in CreaterDelegates<T> _delegates);

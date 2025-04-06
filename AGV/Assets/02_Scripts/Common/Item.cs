@@ -77,7 +77,6 @@ public abstract class Item<T> : Item where T : MonoBehaviour
 
 	public void SetOnClickEvent(in Delegate<T> _onClickEvent)
 	{
-		Debug.Log("onClickEvent");
 		onClickDelegate = _onClickEvent;
 	}
 

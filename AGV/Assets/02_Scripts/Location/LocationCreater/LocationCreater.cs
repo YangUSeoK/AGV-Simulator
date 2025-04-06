@@ -1,4 +1,5 @@
 using Delegates;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class LocationCreater : Creater<Location>
@@ -8,8 +9,12 @@ public class LocationCreater : Creater<Location>
 	private void Awake()
 	{
 		m_LocationSetter = GetComponentInChildren<LocationSetter>();
-
 		m_WindowList.Add(m_LocationSetter);
+	}
+
+	public void SetPreviewPos(LocationPreview _preview, Vector3 _previewPos)
+	{
+		m_LocationSetter.Preview = _preview;
 	}
 
 	protected override void clear()
@@ -43,15 +48,27 @@ public class LocationCreater : Creater<Location>
 		setFlagsOnClickEventDelegate?.Invoke(_callback);
 	}
 
-	private void applyLocationSetter()
+	private void applyLocationSetter(in List<Flag> _loadFlagList, in List<Flag> _unloadFlagList, in Vector3 _createPos)
 	{
-		m_LocationSetter.SetActive(false);
+		var location = Create(_createPos);
+
+		foreach (var flag in _loadFlagList)
+		{
+			flag.LoadLocation = location;
+			location.AddLoadLocationList(flag);
+		}
+
+		foreach (var flag in _unloadFlagList)
+		{
+			flag.UnloadLocation = location;
+			location.AddUnloadLocationList(flag);
+		}
+
 		this.gameObject.SetActive(false);
 	}
 
 	private void cancelLocationSetter()
 	{
-		m_LocationSetter.SetActive(false);
 		this.gameObject.SetActive(false);
 	}
 }
